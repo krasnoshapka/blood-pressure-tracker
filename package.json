@@ -1,7 +1,10 @@
 {
   "name": "blood-pressure-tracker",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
+  "license": "MIT",
+  "author": "Volodymyr Krasnoshapka (https://www.linkedin.com/in/shlapa/)",
+  "homepage": "https://krasnoshapka.github.io/blood-pressure-tracker/",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
