@@ -1,23 +1,22 @@
 {
   "files": {
-    "main.css": "/blood-pressure-tracker/static/css/main.523f09c5.chunk.css",
-    "main.js": "/blood-pressure-tracker/static/js/main.15577053.chunk.js",
-    "main.js.map": "/blood-pressure-tracker/static/js/main.15577053.chunk.js.map",
+    "main.css": "/blood-pressure-tracker/static/css/main.df6ba914.chunk.css",
+    "main.js": "/blood-pressure-tracker/static/js/main.bf95b7ea.chunk.js",
+    "main.js.map": "/blood-pressure-tracker/static/js/main.bf95b7ea.chunk.js.map",
     "runtime-main.js": "/blood-pressure-tracker/static/js/runtime-main.bd35fa3f.js",
     "runtime-main.js.map": "/blood-pressure-tracker/static/js/runtime-main.bd35fa3f.js.map",
-    "static/js/2.870856ce.chunk.js": "/blood-pressure-tracker/static/js/2.870856ce.chunk.js",
-    "static/js/2.870856ce.chunk.js.map": "/blood-pressure-tracker/static/js/2.870856ce.chunk.js.map",
+    "static/js/2.e9614b9b.chunk.js": "/blood-pressure-tracker/static/js/2.e9614b9b.chunk.js",
+    "static/js/2.e9614b9b.chunk.js.map": "/blood-pressure-tracker/static/js/2.e9614b9b.chunk.js.map",
     "index.html": "/blood-pressure-tracker/index.html",
-    "precache-manifest.66c7688842bfc82a75bf33401fbe9625.js": "/blood-pressure-tracker/precache-manifest.66c7688842bfc82a75bf33401fbe9625.js",
+    "precache-manifest.e290443fd88b2a3575025caca1a07180.js": "/blood-pressure-tracker/precache-manifest.e290443fd88b2a3575025caca1a07180.js",
     "service-worker.js": "/blood-pressure-tracker/service-worker.js",
-    "static/css/main.523f09c5.chunk.css.map": "/blood-pressure-tracker/static/css/main.523f09c5.chunk.css.map",
-    "static/js/2.870856ce.chunk.js.LICENSE.txt": "/blood-pressure-tracker/static/js/2.870856ce.chunk.js.LICENSE.txt",
-    "static/media/logo.svg": "/blood-pressure-tracker/static/media/logo.ee7cd8ed.svg"
+    "static/css/main.df6ba914.chunk.css.map": "/blood-pressure-tracker/static/css/main.df6ba914.chunk.css.map",
+    "static/js/2.e9614b9b.chunk.js.LICENSE.txt": "/blood-pressure-tracker/static/js/2.e9614b9b.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.bd35fa3f.js",
-    "static/js/2.870856ce.chunk.js",
-    "static/css/main.523f09c5.chunk.css",
-    "static/js/main.15577053.chunk.js"
+    "static/js/2.e9614b9b.chunk.js",
+    "static/css/main.df6ba914.chunk.css",
+    "static/js/main.bf95b7ea.chunk.js"
   ]
 }

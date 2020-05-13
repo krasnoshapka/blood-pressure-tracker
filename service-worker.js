@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/blood-pressure-tracker/precache-manifest.66c7688842bfc82a75bf33401fbe9625.js"
+  "/blood-pressure-tracker/precache-manifest.e290443fd88b2a3575025caca1a07180.js"
 );
 
 self.addEventListener('message', (event) => {
