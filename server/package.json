@@ -1,0 +1,11 @@
+{
+  "name": "blood-pressure-tracker-api",
+  "version": "0.1.0",
+  "description": "An API for demo PWA for blood pressure tracking.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Volodymyr Krasnoshapka (https://www.linkedin.com/in/shlapa/)",
+  "license": "MIT"
+}
