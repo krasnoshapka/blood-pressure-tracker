@@ -15,6 +15,7 @@ firebase-debug.log*
 # For a team working on the same Firebase project(s), it is recommended to leave
 # it commented so all members can deploy to the same project(s) in .firebaserc.
 # .firebaserc
+/blood-pressure-tracker-77c8c-firebase-adminsdk-1nk6z-f6743e4e33.json
 
 # Runtime data
 pids

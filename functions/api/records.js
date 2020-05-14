@@ -1,8 +1,10 @@
 const { db } = require('../util/admin');
 
 exports.getAllRecords = (request, response) => {
+  const user = request.params.user;
   db
     .collection('records')
+    .where('user', '=', user)
     .orderBy('datetime', 'desc')
     .get()
     .then((data) => {
@@ -10,7 +12,6 @@ exports.getAllRecords = (request, response) => {
       data.forEach((doc) => {
         records.push({
           id: doc.id,
-          user: doc.data().user,
           datetime: doc.data().datetime,
           sys: doc.data().sys,
           dia: doc.data().dia,
