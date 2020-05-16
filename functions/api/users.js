@@ -32,6 +32,7 @@ exports.loginUser = (request, response) => {
     });
 };
 
+// Signup user
 exports.signUpUser = (request, response) => {
   const newUser = {
     email: request.body.email,
@@ -85,3 +86,26 @@ exports.signUpUser = (request, response) => {
       }
     });
 }
+
+// Change user settings
+exports.userSettings = (request, response) => {
+  const userSettings = {
+    email: request.body.email,
+  };
+
+  // TODO: Implement settings validation
+  // const { valid, errors } = validateSignUpData(userSettings);
+
+  // if (!valid) return response.status(400).json(errors);
+
+  db
+    .doc(`/users/${request.user.uid}`)
+    .update(userSettings)
+    .then(() => {
+      return response.json({ message: 'Settings updated successfully' });
+    })
+    .catch((error) => {
+      console.error(error);
+      return response.status(500).json({ error: error.code });
+    });
+};
