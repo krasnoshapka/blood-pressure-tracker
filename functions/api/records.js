@@ -28,15 +28,15 @@ exports.getAllRecords = (request, response) => {
 
 exports.postRecord = (request, response) => {
   if (request.body.sys.trim() === '') {
-    return response.status(400).json({ body: 'Sys pressure not be empty' });
+    return response.status(400).json({ body: 'Sys pressure must not be empty' });
   }
 
   if (request.body.dia.trim() === '') {
-    return response.status(400).json({ body: 'Dia pressure not be empty' });
+    return response.status(400).json({ body: 'Dia pressure must not be empty' });
   }
 
   if (request.body.pul.trim() === '') {
-    return response.status(400).json({ body: 'Pulse not be empty' });
+    return response.status(400).json({ body: 'Pulse must not be empty' });
   }
 
   const newRecord = {
@@ -81,4 +81,3 @@ exports.deleteRecord = (request, response) => {
       return response.status(500).json({ error: err.code });
     });
 };
-
