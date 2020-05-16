@@ -1,10 +1,10 @@
 const { db } = require('../util/admin');
 
 exports.getAllRecords = (request, response) => {
-  const user = request.params.user;
+  const user = request.user.uid;
   db
     .collection('records')
-    .where('user', '=', user)
+    .where('user', '==', user)
     .orderBy('datetime', 'desc')
     .get()
     .then((data) => {
@@ -40,8 +40,7 @@ exports.postRecord = (request, response) => {
   }
 
   const newRecord = {
-    // TODO: Identify user here and get user id
-    user: "1",
+    user: request.user.uid,
     sys: request.body.sys,
     dia: request.body.dia,
     pul: request.body.pul,
@@ -66,6 +65,9 @@ exports.deleteRecord = (request, response) => {
   document
     .get()
     .then((doc) => {
+      if(doc.data().user !== request.user.uid){
+        return response.status(403).json({error:"UnAuthorized"})
+      }
       if (!doc.exists) {
         return response.status(404).json({ error: 'Record not found' })
       }

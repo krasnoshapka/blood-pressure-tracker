@@ -7,9 +7,9 @@ const { getAllRecords, postRecord, deleteRecord } = require('./api/records');
 const { loginUser, signUpUser, userSettings, getUser } = require('./api/users');
 
 // APIs
-app.get('/records/:user', getAllRecords);
-app.post('/records', postRecord);
-app.delete('/records/:record', deleteRecord);
+app.get('/records', auth, getAllRecords);
+app.post('/records', auth, postRecord);
+app.delete('/records/:record', auth, deleteRecord);
 
 app.post('/login', loginUser);
 app.post('/signup', signUpUser);
