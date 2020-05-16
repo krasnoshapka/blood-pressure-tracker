@@ -109,3 +109,20 @@ exports.userSettings = (request, response) => {
       return response.status(500).json({ error: error.code });
     });
 };
+
+exports.getUser = (request, response) => {
+  let userData = {};
+  db
+    .doc(`/users/${request.user.uid}`)
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        userData = doc.data();
+        return response.json(userData);
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      return response.status(500).json({ error: error.code });
+    });
+}
