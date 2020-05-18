@@ -2,6 +2,7 @@ import React from 'react';
 import {BrowserRouter, Route, Switch, NavLink} from 'react-router-dom';
 import './App.css';
 import LoginPage from './pages/Login';
+import SignupPage from './pages/Signup';
 import HomePage from './pages/Home';
 import AddPage from './pages/Add';
 import SettingsPage from './pages/Settings';
@@ -19,6 +20,7 @@ function App() {
           <Switch>
             <Route path={HOME_ROUTE} exact component={HomePage} />
             <Route path={`${HOME_ROUTE}/login`} exact component={LoginPage} />
+            <Route path={`${HOME_ROUTE}/signup`} exact component={SignupPage} />
             <Route path={`${HOME_ROUTE}/add`} exact component={AddPage} />
             <Route path={`${HOME_ROUTE}/settings`} exact component={SettingsPage} />
           </Switch>
