@@ -27,6 +27,7 @@
   "eslintConfig": {
     "extends": "react-app"
   },
+  "proxy": "https://us-central1-blood-pressure-tracker-77c8c.cloudfunctions.net/api",
   "browserslist": {
     "production": [
       ">0.2%",

@@ -1,9 +1,9 @@
 import React from 'react';
 
-const AddPage = () => {
+const Add = () => {
   return (
     <div>Add record</div>
   );
 }
 
-export default AddPage;
+export default Add;

@@ -1,9 +1,9 @@
 import React from 'react';
 
-const SettingsPage = () => {
+const Settings = () => {
   return (
     <div>Settings</div>
   );
 }
 
-export default SettingsPage;
+export default Settings;
