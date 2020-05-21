@@ -52,9 +52,9 @@ class SignupPage extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.UI.errors) {
+    if (nextProps.errors) {
       this.setState({
-        errors: nextProps.UI.errors
+        errors: nextProps.errors
       });
     }
   }
