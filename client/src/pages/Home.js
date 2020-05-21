@@ -2,11 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 
 import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -18,8 +14,8 @@ import Avatar from '@material-ui/core/avatar';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import Settings from '../components/settings';
-import Records from '../components/records';
+import Settings from '../components/Settings';
+import Records from '../components/Records';
 
 import { authMiddleWare } from '../util/auth';
 
@@ -30,9 +26,6 @@ const drawerWidth = 240;
 const styles = (theme) => ({
   root: {
     display: 'flex'
-  },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1
   },
   drawer: {
     width: drawerWidth,
@@ -122,14 +115,6 @@ class HomePage extends Component {
     } else {
       return (
         <div className={classes.root}>
-          <CssBaseline />
-          <AppBar position="fixed" className={classes.appBar}>
-            <Toolbar>
-              <Typography variant="h6" noWrap>
-                Blood Pressure Tracker
-              </Typography>
-            </Toolbar>
-          </AppBar>
           <Drawer
             className={classes.drawer}
             variant="permanent"
