@@ -52,7 +52,7 @@ class HomePage extends Component {
   }
 
   handlePageChange = (event, newPage) => {
-    if (newPage == 'logout') {
+    if (newPage === 'logout') {
       localStorage.removeItem('AuthToken');
       this.props.history.push(`${HOME_ROUTE}/login`);
     }
