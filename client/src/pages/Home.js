@@ -1,16 +1,11 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import BottomNavigation from '@material-ui/core/BottomNavigation';
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import withStyles from '@material-ui/core/styles/withStyles';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import NotesIcon from '@material-ui/icons/Notes';
-import Avatar from '@material-ui/core/avatar';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
@@ -21,29 +16,11 @@ import { authMiddleWare } from '../util/auth';
 
 import { HOME_ROUTE } from "../constants/routes";
 
-const drawerWidth = 240;
-
 const styles = (theme) => ({
   root: {
-    display: 'flex'
-  },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0
-  },
-  drawerPaper: {
-    width: drawerWidth
   },
   content: {
-    flexGrow: 1,
     padding: theme.spacing(3)
-  },
-  avatar: {
-    height: 110,
-    width: 100,
-    flexShrink: 0,
-    flexGrow: 0,
-    marginTop: 20
   },
   uiProgess: {
     position: 'fixed',
@@ -53,33 +30,25 @@ const styles = (theme) => ({
     left: '50%',
     top: '35%'
   },
-  toolbar: theme.mixins.toolbar
 });
 
 class HomePage extends Component {
-  state = {
-    render: false
-  };
-
-  loadSettingsPage = (event) => {
-    this.setState({ render: true });
-  };
-
-  loadRecordsPage = (event) => {
-    this.setState({ render: false });
-  };
-
-  logoutHandler = (event) => {
-    localStorage.removeItem('AuthToken');
-    this.props.history.push(`${HOME_ROUTE}/login`);
-  };
-
   constructor(props) {
     super(props);
 
     this.state = {
       uiLoading: true,
+      page: 'pressure'
     };
+  }
+
+  handlePageChange = (event, newPage) => {
+    if (newPage == 'logout') {
+      localStorage.removeItem('AuthToken');
+      this.props.history.push(`${HOME_ROUTE}/login`);
+    }
+    console.log('SET ' + newPage);
+    this.setState({ page: newPage });
   }
 
   componentWillMount = () => {
@@ -115,49 +84,19 @@ class HomePage extends Component {
     } else {
       return (
         <div className={classes.root}>
-          <Drawer
-            className={classes.drawer}
-            variant="permanent"
-            classes={{
-              paper: classes.drawerPaper
-            }}
-          >
-            <div className={classes.toolbar} />
-            <Divider />
-              <Avatar className={classes.avatar} />
-              <p>
-                {' '}
-                {this.state.email}
-              </p>
-            <Divider />
-            <List>
-              <ListItem button key="Records" onClick={this.loadRecordsPage}>
-                <ListItemIcon>
-                  {' '}
-                  <NotesIcon />{' '}
-                </ListItemIcon>
-                <ListItemText primary="Pressure" />
-              </ListItem>
-
-              <ListItem button key="Settings" onClick={this.loadSettingsPage}>
-                <ListItemIcon>
-                  {' '}
-                  <AccountBoxIcon />{' '}
-                </ListItemIcon>
-                <ListItemText primary="Settings" />
-              </ListItem>
-
-              <ListItem button key="Logout" onClick={this.logoutHandler}>
-                <ListItemIcon>
-                  {' '}
-                  <ExitToAppIcon />{' '}
-                </ListItemIcon>
-                <ListItemText primary="Logout" />
-              </ListItem>
-            </List>
-          </Drawer>
-
-          <div>{this.state.render ? <Settings /> : <Records />}</div>
+          <div className={classes.content}>
+            {(() => {
+              switch (this.state.page) {
+                case 'pressure': return <Records />;
+                case 'settings': return <Settings />;
+              }
+            })()}
+          </div>
+          <BottomNavigation value={this.state.page} onChange={this.handlePageChange}>
+            <BottomNavigationAction label="Pressure" value="pressure" icon={<NotesIcon />} />
+            <BottomNavigationAction label="Settings" value="settings" icon={<AccountBoxIcon />} />
+            <BottomNavigationAction label="Logout" value="logout" icon={<ExitToAppIcon />} />
+          </BottomNavigation>
         </div>
       );
     }

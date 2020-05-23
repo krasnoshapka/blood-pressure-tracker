@@ -14,16 +14,16 @@ const styles = (theme) => ({
 const Header = (props) => {
   const {classes} = props;
   return (
-    <div>
+    <React.Fragment>
       <CssBaseline/>
-      <AppBar position="fixed" className={classes.appBar}>
+      <AppBar position="static" className={classes.appBar}>
         <Toolbar>
           <Typography variant="h6" noWrap>
             Blood Pressure Tracker
           </Typography>
         </Toolbar>
       </AppBar>
-    </div>
+    </React.Fragment>
   );
 }
 
