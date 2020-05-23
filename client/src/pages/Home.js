@@ -6,11 +6,13 @@ import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import withStyles from '@material-ui/core/styles/withStyles';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import NotesIcon from '@material-ui/icons/Notes';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import Settings from '../components/Settings';
 import Records from '../components/Records';
+import AddRecord from "../components/AddRecord";
 
 import { authMiddleWare } from '../util/auth';
 
@@ -93,12 +95,14 @@ class HomePage extends Component {
             {(() => {
               switch (this.state.page) {
                 case 'pressure': return <Records />;
+                case 'add': return <AddRecord />;
                 case 'settings': return <Settings />;
               }
             })()}
           </div>
           <BottomNavigation value={this.state.page} onChange={this.handlePageChange} className={classes.bottomMenu}>
             <BottomNavigationAction label="Pressure" value="pressure" icon={<NotesIcon />} />
+            <BottomNavigationAction label="Add pressure" value="add" icon={<AddCircleIcon />} />
             <BottomNavigationAction label="Settings" value="settings" icon={<AccountBoxIcon />} />
             <BottomNavigationAction label="Logout" value="logout" icon={<ExitToAppIcon />} />
           </BottomNavigation>
