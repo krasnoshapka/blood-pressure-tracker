@@ -28,15 +28,15 @@ exports.getAllRecords = (request, response) => {
 
 exports.postRecord = (request, response) => {
   if (request.body.sys.trim() === '') {
-    return response.status(400).json({ body: 'Sys pressure must not be empty' });
+    return response.status(400).json({ sys: 'Sys pressure must not be empty' });
   }
 
   if (request.body.dia.trim() === '') {
-    return response.status(400).json({ body: 'Dia pressure must not be empty' });
+    return response.status(400).json({ dia: 'Dia pressure must not be empty' });
   }
 
   if (request.body.pul.trim() === '') {
-    return response.status(400).json({ body: 'Pulse must not be empty' });
+    return response.status(400).json({ pul: 'Pulse must not be empty' });
   }
 
   const newRecord = {
