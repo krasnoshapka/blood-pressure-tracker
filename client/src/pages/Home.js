@@ -22,6 +22,11 @@ const styles = (theme) => ({
   content: {
     padding: theme.spacing(3)
   },
+  bottomMenu: {
+    width: '100%',
+    position: 'fixed',
+    bottom: 0,
+  },
   uiProgess: {
     position: 'fixed',
     zIndex: '1000',
@@ -92,7 +97,7 @@ class HomePage extends Component {
               }
             })()}
           </div>
-          <BottomNavigation value={this.state.page} onChange={this.handlePageChange}>
+          <BottomNavigation value={this.state.page} onChange={this.handlePageChange} className={classes.bottomMenu}>
             <BottomNavigationAction label="Pressure" value="pressure" icon={<NotesIcon />} />
             <BottomNavigationAction label="Settings" value="settings" icon={<AccountBoxIcon />} />
             <BottomNavigationAction label="Logout" value="logout" icon={<ExitToAppIcon />} />
