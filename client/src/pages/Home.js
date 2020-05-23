@@ -52,7 +52,6 @@ class HomePage extends Component {
       localStorage.removeItem('AuthToken');
       this.props.history.push(`${HOME_ROUTE}/login`);
     }
-    console.log('SET ' + newPage);
     this.setState({ page: newPage });
   }
 
@@ -63,7 +62,6 @@ class HomePage extends Component {
     axios
       .get('/user')
       .then((response) => {
-        console.log(response.data);
         this.setState({
           email: response.data.email,
           uiLoading: false,
