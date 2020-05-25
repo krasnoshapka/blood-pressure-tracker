@@ -15,7 +15,6 @@ const styles = (theme) => ({
     flexGrow: 1,
     padding: theme.spacing(3)
   },
-  toolbar: theme.mixins.toolbar,
   root: {},
   details: {
     display: 'flex'
@@ -125,7 +124,6 @@ class Settings extends Component {
     if (this.state.uiLoading === true) {
       return (
         <main className={classes.content}>
-          <div className={classes.toolbar} />
           {this.state.uiLoading && <CircularProgress size={150} className={classes.uiProgess} />}
         </main>
       );

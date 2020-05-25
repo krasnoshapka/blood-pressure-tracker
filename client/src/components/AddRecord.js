@@ -18,8 +18,7 @@ const styles = ((theme) => ({
       width: '98%',
       marginLeft: 13,
       marginTop: theme.spacing(3)
-    },
-    toolbar: theme.mixins.toolbar,
+    }
   })
 );
 
