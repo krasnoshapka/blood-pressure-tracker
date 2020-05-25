@@ -24,7 +24,7 @@ const styles = (theme) => ({
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3)
+    padding: theme.spacing(2)
   },
   bottomMenu: {
     width: '100%',
