@@ -11,11 +11,6 @@ import { authMiddleWare } from '../util/auth';
 import { HOME_ROUTE } from "../constants/routes";
 
 const styles = (theme) => ({
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3)
-  },
-  root: {},
   details: {
     display: 'flex'
   },
@@ -123,13 +118,13 @@ class Settings extends Component {
     const { classes, ...rest } = this.props;
     if (this.state.uiLoading === true) {
       return (
-        <main className={classes.content}>
+        <React.Fragment>
           {this.state.uiLoading && <CircularProgress size={150} className={classes.uiProgess} />}
-        </main>
+        </React.Fragment>
       );
     } else {
       return (
-        <main className={classes.content}>
+        <React.Fragment>
           <Card {...rest} className={clsx(classes.root, classes)}>
             <CardContent>
               <div className={classes.details}>
@@ -182,7 +177,7 @@ class Settings extends Component {
             Save details
             {this.state.buttonLoading && <CircularProgress size={30} className={classes.progess} />}
           </Button>
-        </main>
+        </React.Fragment>
       );
     }
   }

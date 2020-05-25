@@ -10,10 +10,6 @@ import axios from 'axios';
 import { authMiddleWare } from '../util/auth';
 
 const styles = ((theme) => ({
-    content: {
-      flexGrow: 1,
-      padding: theme.spacing(3),
-    },
     form: {
       width: '98%',
       marginLeft: 13,
@@ -67,7 +63,7 @@ class AddRecord extends Component {
     const { errors } = this.state;
 
     return (
-      <main className={classes.content}>
+      <React.Fragment>
         <Typography paragraph>
           Enter your pressure
         </Typography>
@@ -123,7 +119,7 @@ class AddRecord extends Component {
             </Grid>
           </Grid>
         </form>
-      </main>
+      </React.Fragment>
     )
   }
 }
