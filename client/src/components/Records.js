@@ -17,7 +17,6 @@ class Records extends Component {
     const { classes } = this.props;
     return (
       <main className={classes.content}>
-        <div className={classes.toolbar} />
         <Typography paragraph>
           Hello I am Records
         </Typography>

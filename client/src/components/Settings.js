@@ -132,7 +132,6 @@ class Settings extends Component {
     } else {
       return (
         <main className={classes.content}>
-          <div className={classes.toolbar} />
           <Card {...rest} className={clsx(classes.root, classes)}>
             <CardContent>
               <div className={classes.details}>

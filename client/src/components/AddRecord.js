@@ -69,7 +69,6 @@ class AddRecord extends Component {
 
     return (
       <main className={classes.content}>
-        <div className={classes.toolbar} />
         <Typography paragraph>
           Enter your pressure
         </Typography>
