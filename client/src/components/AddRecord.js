@@ -8,6 +8,7 @@ import SaveIcon from '@material-ui/icons/Save';
 
 import axios from 'axios';
 import { authMiddleWare } from '../util/auth';
+import { API_ROUTE } from "../constants/routes";
 
 const styles = ((theme) => ({
     form: {
@@ -48,7 +49,7 @@ class AddRecord extends Component {
     const authToken = localStorage.getItem('AuthToken');
     axios.defaults.headers.common = { Authorization: `${authToken}` };
     axios
-      .post('/records', newRecord)
+      .post(`${API_ROUTE}/records/`, newRecord)
       .then(() => {
         window.location.reload();
       })

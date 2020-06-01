@@ -12,7 +12,7 @@ import Container from '@material-ui/core/Container';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import axios from 'axios';
-import {HOME_ROUTE} from '../constants/routes';
+import {HOME_ROUTE, API_ROUTE} from '../constants/routes';
 
 const styles = (theme) => ({
   paper: {
@@ -76,7 +76,7 @@ class LoginPage extends Component {
       password: this.state.password
     };
     axios
-      .post('/login', userData)
+      .post(`${API_ROUTE}/user/login`, userData)
       .then((response) => {
         localStorage.setItem('AuthToken', `Bearer ${response.data.token}`);
         this.setState({

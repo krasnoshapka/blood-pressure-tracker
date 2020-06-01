@@ -8,7 +8,7 @@ import { Card, CardActions, CardContent, Divider, Button, Grid, TextField } from
 import clsx from 'clsx';
 import axios from 'axios';
 import { authMiddleWare } from '../util/auth';
-import { HOME_ROUTE } from "../constants/routes";
+import { HOME_ROUTE, API_ROUTE } from "../constants/routes";
 
 const styles = (theme) => ({
   details: {
@@ -68,7 +68,7 @@ class Settings extends Component {
     const authToken = localStorage.getItem('AuthToken');
     axios.defaults.headers.common = { Authorization: `${authToken}` };
     axios
-      .get('/user')
+      .get(`${API_ROUTE}/user/`)
       .then((response) => {
         console.log(response.data);
         this.setState({
@@ -101,7 +101,7 @@ class Settings extends Component {
       email: this.state.email
     };
     axios
-      .post('/user/settings', formRequest)
+      .post(`${API_ROUTE}/user/settings`, formRequest)
       .then(() => {
         this.setState({ buttonLoading: false });
       })

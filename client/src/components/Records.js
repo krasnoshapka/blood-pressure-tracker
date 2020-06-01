@@ -14,6 +14,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 import axios from 'axios';
 import { authMiddleWare } from '../util/auth';
+import { API_ROUTE } from "../constants/routes";
 
 const styles = ((theme) => ({
     uiProgess: {
@@ -47,7 +48,7 @@ class Records extends Component {
     const authToken = localStorage.getItem('AuthToken');
     axios.defaults.headers.common = { Authorization: `${authToken}` };
     axios
-      .delete(`records/${id}`)
+      .delete(`${API_ROUTE}/records/${id}`)
       .then(() => {
         window.location.reload();
       })
@@ -61,7 +62,7 @@ class Records extends Component {
     const authToken = localStorage.getItem('AuthToken');
     axios.defaults.headers.common = { Authorization: `${authToken}` };
     axios
-      .get('/records')
+      .get(`${API_ROUTE}/records/`)
       .then((response) => {
         this.setState({
           records: response.data,

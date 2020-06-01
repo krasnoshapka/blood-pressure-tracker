@@ -12,7 +12,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import axios from 'axios';
-import {HOME_ROUTE} from "../constants/routes";
+import {HOME_ROUTE, API_ROUTE} from "../constants/routes";
 
 const styles = (theme) => ({
   paper: {
@@ -73,7 +73,7 @@ class SignupPage extends Component {
       confirmPassword: this.state.confirmPassword
     };
     axios
-      .post('/signup', newUserData)
+      .post(`${API_ROUTE}/user/signup`, newUserData)
       .then((response) => {
         localStorage.setItem('AuthToken', `${response.data.token}`);
         this.setState({

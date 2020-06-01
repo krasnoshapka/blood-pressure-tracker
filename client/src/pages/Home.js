@@ -16,7 +16,7 @@ import AddRecord from "../components/AddRecord";
 
 import { authMiddleWare } from '../util/auth';
 
-import { HOME_ROUTE } from "../constants/routes";
+import { HOME_ROUTE, API_ROUTE } from "../constants/routes";
 
 const styles = (theme) => ({
   root: {
@@ -64,7 +64,7 @@ class HomePage extends Component {
     const authToken = localStorage.getItem('AuthToken');
     axios.defaults.headers.common = { Authorization: `${authToken}` };
     axios
-      .get('/user')
+      .get(`${API_ROUTE}/user/`)
       .then((response) => {
         this.setState({
           email: response.data.email,
