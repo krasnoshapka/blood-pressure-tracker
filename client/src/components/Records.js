@@ -103,9 +103,7 @@ class Records extends Component {
               <TableHead>
                 <TableRow>
                   <TableCell>Date</TableCell>
-                  <TableCell align="right">Sys</TableCell>
-                  <TableCell align="right">Dia</TableCell>
-                  <TableCell align="right">Pul</TableCell>
+                  <TableCell align="right">Record</TableCell>
                   <TableCell align="right"></TableCell>
                 </TableRow>
               </TableHead>
@@ -115,9 +113,7 @@ class Records extends Component {
                     <TableCell component="th" scope="row">
                       {(new Date(record.datetime)).toLocaleString('uk-UA')}
                     </TableCell>
-                    <TableCell align="right">{record.sys}</TableCell>
-                    <TableCell align="right">{record.dia}</TableCell>
-                    <TableCell align="right">{record.pul}</TableCell>
+                    <TableCell align="right">{`${record.sys}/${record.dia}/${record.pul}`}</TableCell>
                     <TableCell align="center">
                       <IconButton aria-label="delete" size="small" onClick={() => this.handleDelete(record.id)}>
                         <DeleteIcon />
