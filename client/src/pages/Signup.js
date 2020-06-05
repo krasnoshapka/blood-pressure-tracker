@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {useState} from 'react';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -37,141 +37,119 @@ const styles = (theme) => ({
   }
 });
 
-class SignupPage extends Component {
-  constructor(props) {
-    super(props);
+const SignupPage = (props) => {
+  const [userData, setUserData] = useState({
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+  const [errors, setErrors] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-    this.state = {
-      email: '',
-      password: '',
-      confirmPassword: '',
-      errors: [],
-      loading: false
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.errors) {
-      this.setState({
-        errors: nextProps.errors
-      });
-    }
-  }
-
-  handleChange = (event) => {
-    this.setState({
-      [event.target.name]: event.target.value
-    });
+  const handleChange = (event) => {
+    let newUserData = {...userData};
+    newUserData[event.target.name] = event.target.value;
+    setUserData(newUserData);
   };
 
-  handleSubmit = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    this.setState({ loading: true });
-    const newUserData = {
-      email: this.state.email,
-      password: this.state.password,
-      confirmPassword: this.state.confirmPassword
-    };
+    setLoading(true);
     axios
-      .post(`${API_ROUTE}/user/signup`, newUserData)
+      .post(`${API_ROUTE}/user/signup`, userData)
       .then((response) => {
         localStorage.setItem('AuthToken', `${response.data.token}`);
-        this.setState({
-          loading: false,
-        });
-        this.props.history.push(HOME_ROUTE);
+        setLoading(false);
+        props.history.push(HOME_ROUTE);
       })
       .catch((error) => {
-        this.setState({
-          errors: error.response.data,
-          loading: false
-        });
+        setErrors(error.response.data);
+        setLoading(false);
       });
   };
 
-  render() {
-    const { classes } = this.props;
-    const { errors, loading } = this.state;
-    return (
-      <Container component="main" maxWidth="xs">
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign up
-          </Typography>
-          <form className={classes.form} noValidate>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  helperText={errors.email}
-                  error={errors.email ? true : false}
-                  onChange={this.handleChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
-                  helperText={errors.password}
-                  error={errors.password ? true : false}
-                  onChange={this.handleChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  name="confirmPassword"
-                  label="Confirm Password"
-                  type="password"
-                  id="confirmPassword"
-                  autoComplete="current-password"
-                  onChange={this.handleChange}
-                />
-              </Grid>
+  const {classes} = props;
+  return (
+    <Container component="main" maxWidth="xs">
+      <div className={classes.paper}>
+        <Avatar className={classes.avatar}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Sign up
+        </Typography>
+        <form className={classes.form} noValidate>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                helperText={errors.email}
+                error={errors.email ? true : false}
+                onChange={handleChange}
+              />
             </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-              onClick={this.handleSubmit}
-              disabled={loading ||
-              !this.state.email ||
-              !this.state.password}
-            >
-              Sign Up
-              {loading && <CircularProgress size={30} className={classes.progess} />}
-            </Button>
-            <Grid container justify="flex-end">
-              <Grid item>
-                <Link href="login" variant="body2">
-                  Already have an account? Sign in
-                </Link>
-              </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                helperText={errors.password}
+                error={errors.password ? true : false}
+                onChange={handleChange}
+              />
             </Grid>
-          </form>
-        </div>
-      </Container>
-    );
-  }
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="confirmPassword"
+                label="Confirm Password"
+                type="password"
+                id="confirmPassword"
+                autoComplete="current-password"
+                helperText={errors.confirmPassword}
+                error={errors.confirmPassword ? true : false}
+                onChange={handleChange}
+              />
+            </Grid>
+          </Grid>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+            onClick={handleSubmit}
+            disabled={loading ||
+            !userData.email ||
+            !userData.password}
+          >
+            Sign Up
+            {loading && <CircularProgress size={30} className={classes.progess} />}
+          </Button>
+          <Grid container justify="flex-end">
+            <Grid item>
+              <Link href="login" variant="body2">
+                Already have an account? Sign in
+              </Link>
+            </Grid>
+          </Grid>
+        </form>
+      </div>
+    </Container>
+  );
 }
 
 export default withStyles(styles)(SignupPage);
