@@ -79,10 +79,9 @@ const Settings = (props) => {
   }, []);
 
   const handleChange = (event) => {
-    // TODO: this function should handle setting different settings in state.
-    setSettings({
-      [event.target.name]: event.target.value
-    });
+    let newSettings = {...settings}
+    newSettings[event.target.name] = event.target.value
+    setSettings(newSettings);
   };
 
   const updateFormValues = (event) => {

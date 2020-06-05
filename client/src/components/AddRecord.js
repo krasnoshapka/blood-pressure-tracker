@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -19,31 +19,27 @@ const styles = ((theme) => ({
   })
 );
 
-class AddRecord extends Component {
-  constructor(props) {
-    super(props);
+const AddRecord = (props) => {
+  const [record, setRecord] = useState({
+    sys: '',
+    dia: '',
+    pul: ''
+  });
+  const [errors, setErrors] = useState([]);
 
-    this.state = {
-      sys: '',
-      dia: '',
-      pul: '',
-      errors: []
-    }
-  }
-
-  handleChange = (event) => {
-    this.setState({
-      [event.target.name]: event.target.value
-    });
+  const handleChange = (event) => {
+    let newRecord = {...record};
+    newRecord[event.target.name] = event.target.value;
+    setRecord(newRecord);
   };
 
-  handleSubmit = (event) => {
-    authMiddleWare(this.props.history);
+  const handleSubmit = (event) => {
+    authMiddleWare(props.history);
     event.preventDefault();
     const newRecord = {
-      sys: this.state.sys,
-      dia: this.state.dia,
-      pul: this.state.pul
+      sys: record.sys,
+      dia: record.dia,
+      pul: record.pul
     };
 
     const authToken = localStorage.getItem('AuthToken');
@@ -54,75 +50,72 @@ class AddRecord extends Component {
         window.location.reload();
       })
       .catch((error) => {
-        this.setState({ errors: error.response.data });
+        setErrors(error.response.data);
         console.log(error);
       });
   };
 
-  render() {
-    const { classes } = this.props;
-    const { errors } = this.state;
+  const {classes} = props;
 
-    return (
-      <React.Fragment>
-        <Typography paragraph>
-          Enter your pressure
-        </Typography>
-        <form className={classes.form} noValidate>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="sys"
-                label="Systolic"
-                name="sys"
-                autoComplete="Systolic"
-                helperText={errors.sys}
-                value={this.state.sys}
-                error={errors.sys ? true : false}
-                onChange={this.handleChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="dia"
-                label="Diastolic"
-                name="dia"
-                autoComplete="Diastolic"
-                helperText={errors.dia}
-                value={this.state.dia}
-                error={errors.dia ? true : false}
-                onChange={this.handleChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="pul"
-                label="Pulse"
-                name="pul"
-                autoComplete="Pulse"
-                helperText={errors.pul}
-                value={this.state.pul}
-                error={errors.pul ? true : false}
-                onChange={this.handleChange}
-              />
-            </Grid>
-           <Grid item xs={12}>
-              <Button variant="contained" color="primary" size="large" onClick={this.handleSubmit} startIcon={<SaveIcon />} >Save</Button>
-            </Grid>
+  return (
+    <React.Fragment>
+      <Typography paragraph>
+        Enter your pressure
+      </Typography>
+      <form className={classes.form} noValidate>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              variant="outlined"
+              required
+              fullWidth
+              id="sys"
+              label="Systolic"
+              name="sys"
+              autoComplete="Systolic"
+              helperText={errors.sys}
+              value={record.sys}
+              error={errors.sys ? true : false}
+              onChange={handleChange}
+            />
           </Grid>
-        </form>
-      </React.Fragment>
-    )
-  }
+          <Grid item xs={12}>
+            <TextField
+              variant="outlined"
+              required
+              fullWidth
+              id="dia"
+              label="Diastolic"
+              name="dia"
+              autoComplete="Diastolic"
+              helperText={errors.dia}
+              value={record.dia}
+              error={errors.dia ? true : false}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              variant="outlined"
+              required
+              fullWidth
+              id="pul"
+              label="Pulse"
+              name="pul"
+              autoComplete="Pulse"
+              helperText={errors.pul}
+              value={record.pul}
+              error={errors.pul ? true : false}
+              onChange={handleChange}
+            />
+          </Grid>
+         <Grid item xs={12}>
+            <Button variant="contained" color="primary" size="large" onClick={handleSubmit} startIcon={<SaveIcon />} >Save</Button>
+          </Grid>
+        </Grid>
+      </form>
+    </React.Fragment>
+  )
 }
 
 export default (withStyles(styles)(AddRecord));
