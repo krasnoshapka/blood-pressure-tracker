@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
@@ -31,20 +31,12 @@ const styles = ((theme) => ({
   })
 );
 
-class Records extends Component {
-  constructor(props) {
-    super(props);
+const Records = (props) => {
+  const [records, setRecords] = useState([]);
+  const [uiLoading, setUiLoading] = useState(true);
 
-    this.state = {
-      records: [],
-      uiLoading: true
-    };
-
-    this.handleDelete = this.handleDelete.bind(this);
-  }
-
-  handleDelete = (id) => {
-    authMiddleWare(this.props.history);
+  const handleDelete = (id) => {
+    authMiddleWare(props.history);
     const authToken = localStorage.getItem('AuthToken');
     axios.defaults.headers.common = { Authorization: `${authToken}` };
     axios
@@ -57,76 +49,72 @@ class Records extends Component {
       });
   }
 
-  componentWillMount = () => {
-    authMiddleWare(this.props.history);
+  useEffect(() => {
+    authMiddleWare(props.history);
     const authToken = localStorage.getItem('AuthToken');
     axios.defaults.headers.common = { Authorization: `${authToken}` };
     axios
       .get(`${API_ROUTE}/records/`)
       .then((response) => {
-        this.setState({
-          records: response.data,
-          uiLoading: false
-        });
+        setRecords(response.data);
+        setUiLoading(false);
       })
       .catch((err) => {
         console.log(err);
       });
-  };
+  }, []);
 
-  render() {
-    const { classes } = this.props;
+  const { classes } = props;
 
-    if (this.state.uiLoading === true) {
-      return (
-        <React.Fragment>
-          {this.state.uiLoading && <CircularProgress size={150} className={classes.uiProgess} />}
-        </React.Fragment>
-      );
-    } else if (this.state.records.length === 0) {
-      return (
-        <React.Fragment>
-          <Typography paragraph>
-            No pressure records. Please add using button below.
-          </Typography>
-        </React.Fragment>
-      );
-    } else {
-      return (
-        <React.Fragment>
-          <Typography paragraph>
-            Recent pressure records
-          </Typography>
+  if (uiLoading === true) {
+    return (
+      <React.Fragment>
+        {uiLoading && <CircularProgress size={150} className={classes.uiProgess} />}
+      </React.Fragment>
+    );
+  } else if (records.length === 0) {
+    return (
+      <React.Fragment>
+        <Typography paragraph>
+          No pressure records. Please add using button below.
+        </Typography>
+      </React.Fragment>
+    );
+  } else {
+    return (
+      <React.Fragment>
+        <Typography paragraph>
+          Recent pressure records
+        </Typography>
 
-          <TableContainer component={Paper}>
-            <Table className={classes.table} size="small" aria-label="blood pressure table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Date</TableCell>
-                  <TableCell align="right">Record</TableCell>
-                  <TableCell align="right"></TableCell>
+        <TableContainer component={Paper}>
+          <Table className={classes.table} size="small" aria-label="blood pressure table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Date</TableCell>
+                <TableCell align="right">Record</TableCell>
+                <TableCell align="right"></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {records.map((record) => (
+                <TableRow key={record.id}>
+                  <TableCell component="th" scope="row">
+                    {(new Date(record.datetime)).toLocaleString('uk-UA')}
+                  </TableCell>
+                  <TableCell align="right">{`${record.sys}/${record.dia}/${record.pul}`}</TableCell>
+                  <TableCell align="center">
+                    <IconButton aria-label="delete" size="small" onClick={() => handleDelete(record.id)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {this.state.records.map((record) => (
-                  <TableRow key={record.id}>
-                    <TableCell component="th" scope="row">
-                      {(new Date(record.datetime)).toLocaleString('uk-UA')}
-                    </TableCell>
-                    <TableCell align="right">{`${record.sys}/${record.dia}/${record.pul}`}</TableCell>
-                    <TableCell align="center">
-                      <IconButton aria-label="delete" size="small" onClick={() => this.handleDelete(record.id)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </React.Fragment>
-      );
-    }
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </React.Fragment>
+    );
   }
 }
 
