@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
@@ -27,7 +27,7 @@ const styles = (theme) => ({
     position: 'absolute',
     top: '50%'
   },
-  uiProgess: {
+  uiProgress: {
     position: 'fixed',
     zIndex: '1000',
     height: '31px',
@@ -35,7 +35,7 @@ const styles = (theme) => ({
     left: '50%',
     top: '35%'
   },
-  progess: {
+  progress: {
     position: 'absolute'
   },
   uploadButton: {
@@ -52,134 +52,124 @@ const styles = (theme) => ({
   }
 });
 
-class Settings extends Component {
-  constructor(props) {
-    super(props);
+const Settings = (props) => {
+  const [settings, setSettings] = useState({email: ''});
+  const [uiLoading, setUiLoading] = useState(true);
+  const [buttonLoading, setButtonLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
-    this.state = {
-      email: '',
-      uiLoading: true,
-      buttonLoading: false,
-    };
-  }
-
-  componentWillMount = () => {
-    authMiddleWare(this.props.history);
+  useEffect(() => {
+    authMiddleWare(props.history);
     const authToken = localStorage.getItem('AuthToken');
     axios.defaults.headers.common = { Authorization: `${authToken}` };
     axios
       .get(`${API_ROUTE}/user/`)
       .then((response) => {
         console.log(response.data);
-        this.setState({
-          email: response.data.email,
-          uiLoading: false
-        });
+        setSettings(response.data);
+        setUiLoading(false);
       })
       .catch((error) => {
         if (error.response.status === 403) {
-          this.props.history.push(`${HOME_ROUTE}/login`);
+          props.history.push(`${HOME_ROUTE}/login`);
         }
         console.log(error);
-        this.setState({ errorMsg: 'Error in retrieving the data' });
+        setErrorMsg('Error in retrieving the data');
       });
-  };
+  }, []);
 
-  handleChange = (event) => {
-    this.setState({
+  const handleChange = (event) => {
+    // TODO: this function should handle setting different settings in state.
+    setSettings({
       [event.target.name]: event.target.value
     });
   };
 
-  updateFormValues = (event) => {
+  const updateFormValues = (event) => {
     event.preventDefault();
-    this.setState({ buttonLoading: true });
-    authMiddleWare(this.props.history);
+    setButtonLoading(true);
+    authMiddleWare(props.history);
     const authToken = localStorage.getItem('AuthToken');
     axios.defaults.headers.common = { Authorization: `${authToken}` };
     const formRequest = {
-      email: this.state.email
+      email: settings.email
     };
     axios
       .post(`${API_ROUTE}/user/settings`, formRequest)
       .then(() => {
-        this.setState({ buttonLoading: false });
+        setButtonLoading(false);
       })
       .catch((error) => {
         if (error.response.status === 403) {
-          this.props.history.push(`${HOME_ROUTE}/login`);
+          props.history.push(`${HOME_ROUTE}/login`);
         }
         console.log(error);
-        this.setState({ buttonLoading: false });
+        setButtonLoading(false);
       });
   };
 
-  render() {
-    const { classes, ...rest } = this.props;
-    if (this.state.uiLoading === true) {
-      return (
-        <React.Fragment>
-          {this.state.uiLoading && <CircularProgress size={150} className={classes.uiProgess} />}
-        </React.Fragment>
-      );
-    } else {
-      return (
-        <React.Fragment>
-          <Card {...rest} className={clsx(classes.root, classes)}>
-            <CardContent>
-              <div className={classes.details}>
-                <div>
-                  <Typography className={classes.locationText} gutterBottom variant="h4">
-                    {this.state.email}
-                  </Typography>
-                </div>
+
+  const { classes, ...rest } = props;
+  if (uiLoading === true) {
+    return (
+      <React.Fragment>
+        {uiLoading && <CircularProgress size={150} className={classes.uiProgress} />}
+      </React.Fragment>
+    );
+  } else {
+    return (
+      <React.Fragment>
+        <Card {...rest} className={clsx(classes.root, classes)}>
+          <CardContent>
+            <div className={classes.details}>
+              <div>
+                <Typography className={classes.locationText} gutterBottom variant="h4">
+                  {settings.email}
+                </Typography>
               </div>
-              <div className={classes.progress} />
+            </div>
+            <div className={classes.progress} />
+          </CardContent>
+          <Divider />
+        </Card>
+
+        <br />
+        <Card {...rest} className={clsx(classes.root, classes)}>
+          <form autoComplete="off" noValidate>
+            <Divider />
+            <CardContent>
+              <Grid container spacing={3}>
+                <Grid item md={6} xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Email"
+                    margin="dense"
+                    name="email"
+                    variant="outlined"
+                    disabled={true}
+                    value={settings.email}
+                    onChange={handleChange}
+                  />
+                </Grid>
+              </Grid>
             </CardContent>
             <Divider />
-          </Card>
-
-          <br />
-          <Card {...rest} className={clsx(classes.root, classes)}>
-            <form autoComplete="off" noValidate>
-              <Divider />
-              <CardContent>
-                <Grid container spacing={3}>
-                  <Grid item md={6} xs={12}>
-                    <TextField
-                      fullWidth
-                      label="Email"
-                      margin="dense"
-                      name="email"
-                      variant="outlined"
-                      disabled={true}
-                      value={this.state.email}
-                      onChange={this.handleChange}
-                    />
-                  </Grid>
-                </Grid>
-              </CardContent>
-              <Divider />
-              <CardActions />
-            </form>
-          </Card>
-          <Button
-            color="primary"
-            variant="contained"
-            type="submit"
-            className={classes.submitButton}
-            onClick={this.updateFormValues}
-            disabled={
-              this.state.buttonLoading ||
-              !this.state.email
-            }
-          >
-            Save details
-            {this.state.buttonLoading && <CircularProgress size={30} className={classes.progess} />}
-          </Button>
-        </React.Fragment>
-      );
-    }
+            <CardActions />
+          </form>
+        </Card>
+        <Button
+          color="primary"
+          variant="contained"
+          type="submit"
+          className={classes.submitButton}
+          onClick={updateFormValues}
+          disabled={buttonLoading || !settings.email}
+        >
+          Save details
+          {buttonLoading && <CircularProgress size={30} className={classes.progress} />}
+        </Button>
+      </React.Fragment>
+    );
   }
 }
 
