@@ -95,7 +95,7 @@ const HomePage = (props) => {
         </div>
         <BottomNavigation value={page} onChange={handlePageChange} className={classes.bottomMenu}>
           <BottomNavigationAction label="Pressure" value="pressure" icon={<NotesIcon />} />
-          <BottomNavigationAction label="Add pressure" value="add" icon={<AddCircleIcon />} />
+          <BottomNavigationAction label="Add" value="add" icon={<AddCircleIcon />} />
           <BottomNavigationAction label="Settings" value="settings" icon={<AccountBoxIcon />} />
           <BottomNavigationAction label="Logout" value="logout" icon={<ExitToAppIcon />} />
         </BottomNavigation>
