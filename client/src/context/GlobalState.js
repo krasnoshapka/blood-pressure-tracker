@@ -11,40 +11,20 @@ export const GlobalContext = createContext(initialState);
 export const GlobalProvider = ({ children }) => {
   const [state, dispatch] = useReducer(AppReducer, initialState);
 
-  function setPage(page) {
-    dispatch({
-      type: "SET_PAGE",
-      payload: page
-    });
+  function actionCreator(type) {
+    return (payload) => {
+      dispatch({
+        type: type,
+        payload: payload
+      });
+    }
   }
 
-  function addRecord(record) {
-    dispatch({
-      type: "ADD_RECORD",
-      payload: record
-    });
-  }
-
-  function deleteRecord(id) {
-    dispatch({
-      type: "DELETE_RECORD",
-      payload: id
-    });
-  }
-
-  function setRecords(records) {
-    dispatch({
-      type: "SET_RECORDS",
-      payload: records
-    });
-  }
-
-  function setSettings(settings) {
-    dispatch({
-      type: "SET_SETTINGS",
-      payload: settings
-    });
-  }
+  const setPage = actionCreator("SET_PAGE");
+  const addRecord = actionCreator("ADD_RECORD");
+  const deleteRecord = actionCreator("DELETE_RECORD");
+  const setRecords = actionCreator("SET_RECORDS");
+  const setSettings = actionCreator("SET_SETTINGS");
 
   return (
     <GlobalContext.Provider
