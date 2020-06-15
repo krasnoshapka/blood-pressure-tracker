@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useContext, useEffect } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
@@ -15,6 +15,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import axios from 'axios';
 import { authMiddleWare } from '../util/auth';
 import { API_ROUTE } from "../constants/routes";
+import {GlobalContext} from "../context/GlobalState";
 
 const styles = ((theme) => ({
     uiProgess: {
@@ -32,17 +33,19 @@ const styles = ((theme) => ({
 );
 
 const Records = (props) => {
-  const [records, setRecords] = useState([]);
-  const [uiLoading, setUiLoading] = useState(true);
+  const {records, setRecords, deleteRecord} = useContext(GlobalContext);
+  const [uiLoading, setUiLoading] = useState(false);
 
   const handleDelete = (id) => {
+    setUiLoading(true);
     authMiddleWare(props.history);
     const authToken = localStorage.getItem('AuthToken');
     axios.defaults.headers.common = { Authorization: `${authToken}` };
     axios
       .delete(`${API_ROUTE}/records/${id}`)
       .then(() => {
-        window.location.reload();
+        deleteRecord(id);
+        setUiLoading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -50,23 +53,26 @@ const Records = (props) => {
   }
 
   useEffect(() => {
-    authMiddleWare(props.history);
-    const authToken = localStorage.getItem('AuthToken');
-    axios.defaults.headers.common = { Authorization: `${authToken}` };
-    axios
-      .get(`${API_ROUTE}/records/`)
-      .then((response) => {
-        setRecords(response.data);
-        setUiLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (records === null) {
+      setUiLoading(true);
+      authMiddleWare(props.history);
+      const authToken = localStorage.getItem('AuthToken');
+      axios.defaults.headers.common = {Authorization: `${authToken}`};
+      axios
+        .get(`${API_ROUTE}/records/`)
+        .then((response) => {
+          setRecords(response.data);
+          setUiLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }, []);
 
   const { classes } = props;
 
-  if (uiLoading === true) {
+  if (records === null || uiLoading === true) {
     return (
       <React.Fragment>
         {uiLoading && <CircularProgress size={150} className={classes.uiProgess} />}

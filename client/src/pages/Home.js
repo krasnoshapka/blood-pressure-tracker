@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 
 import BottomNavigation from '@material-ui/core/BottomNavigation';
@@ -15,7 +15,7 @@ import Records from '../components/Records';
 import AddRecord from "../components/AddRecord";
 
 import { authMiddleWare } from '../util/auth';
-
+import {GlobalContext} from "../context/GlobalState";
 import { HOME_ROUTE, API_ROUTE } from "../constants/routes";
 
 const styles = (theme) => ({
@@ -44,7 +44,7 @@ const styles = (theme) => ({
 const HomePage = (props) => {
   const [settings, setSettings] = useState({email: ''});
   const [uiLoading, setUiLoading] = useState(true);
-  const [page, setPage] = useState('pressure');
+  const {page, setPage} = useContext(GlobalContext);
   const [errorMsg, setErrorMsg] = useState('');
 
   const handlePageChange = (event, newPage) => {

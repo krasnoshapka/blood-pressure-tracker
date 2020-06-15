@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -9,6 +9,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import axios from 'axios';
 import { authMiddleWare } from '../util/auth';
 import { API_ROUTE } from "../constants/routes";
+import {GlobalContext} from "../context/GlobalState";
 
 const styles = ((theme) => ({
     form: {
@@ -20,6 +21,7 @@ const styles = ((theme) => ({
 );
 
 const AddRecord = (props) => {
+  const {setPage, addRecord} = useContext(GlobalContext);
   const [record, setRecord] = useState({
     sys: '',
     dia: '',
@@ -46,8 +48,9 @@ const AddRecord = (props) => {
     axios.defaults.headers.common = { Authorization: `${authToken}` };
     axios
       .post(`${API_ROUTE}/records/`, newRecord)
-      .then(() => {
-        window.location.reload();
+      .then((response) => {
+        addRecord(response.data);
+        setPage('pressure');
       })
       .catch((error) => {
         setErrors(error.response.data);
