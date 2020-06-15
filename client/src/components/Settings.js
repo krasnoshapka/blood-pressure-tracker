@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 
 import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
@@ -8,6 +8,7 @@ import { Card, CardActions, CardContent, Divider, Button, Grid, TextField } from
 import clsx from 'clsx';
 import axios from 'axios';
 import { authMiddleWare } from '../util/auth';
+import {GlobalContext} from "../context/GlobalState";
 import { HOME_ROUTE, API_ROUTE } from "../constants/routes";
 
 const styles = (theme) => ({
@@ -53,30 +54,8 @@ const styles = (theme) => ({
 });
 
 const Settings = (props) => {
-  const [settings, setSettings] = useState({email: ''});
-  const [uiLoading, setUiLoading] = useState(true);
+  const {settings, setSettings, setPage} = useContext(GlobalContext);
   const [buttonLoading, setButtonLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
-
-  useEffect(() => {
-    authMiddleWare(props.history);
-    const authToken = localStorage.getItem('AuthToken');
-    axios.defaults.headers.common = { Authorization: `${authToken}` };
-    axios
-      .get(`${API_ROUTE}/user/`)
-      .then((response) => {
-        console.log(response.data);
-        setSettings(response.data);
-        setUiLoading(false);
-      })
-      .catch((error) => {
-        if (error.response.status === 403) {
-          props.history.push(`${HOME_ROUTE}/login`);
-        }
-        console.log(error);
-        setErrorMsg('Error in retrieving the data');
-      });
-  }, []);
 
   const handleChange = (event) => {
     let newSettings = {...settings}
@@ -97,6 +76,7 @@ const Settings = (props) => {
       .post(`${API_ROUTE}/user/settings`, formRequest)
       .then(() => {
         setButtonLoading(false);
+        setPage('pressure');
       })
       .catch((error) => {
         if (error.response.status === 403) {
@@ -107,13 +87,10 @@ const Settings = (props) => {
       });
   };
 
-
   const { classes, ...rest } = props;
-  if (uiLoading === true) {
+  if (settings === null || !settings) {
     return (
-      <React.Fragment>
-        {uiLoading && <CircularProgress size={150} className={classes.uiProgress} />}
-      </React.Fragment>
+      <React.Fragment>Loading...</React.Fragment>
     );
   } else {
     return (
@@ -123,7 +100,7 @@ const Settings = (props) => {
             <div className={classes.details}>
               <div>
                 <Typography className={classes.locationText} gutterBottom variant="h4">
-                  {settings.email}
+                  Settings for {settings.email}
                 </Typography>
               </div>
             </div>

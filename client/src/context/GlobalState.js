@@ -39,16 +39,24 @@ export const GlobalProvider = ({ children }) => {
     });
   }
 
+  function setSettings(settings) {
+    dispatch({
+      type: "SET_SETTINGS",
+      payload: settings
+    });
+  }
+
   return (
     <GlobalContext.Provider
       value={{
         records: state.records,
-        user: state.user,
+        settings: state.settings,
         page: state.page,
         setPage,
         addRecord,
         deleteRecord,
-        setRecords
+        setRecords,
+        setSettings
       }}
     >
       {children}

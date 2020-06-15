@@ -24,7 +24,11 @@ export default (state, action) => {
         ...state,
         records: action.payload
       };
-
+    case "SET_SETTINGS":
+      return {
+        ...state,
+        settings: action.payload
+      };
     default:
       return state;
   }

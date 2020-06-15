@@ -42,9 +42,8 @@ const styles = (theme) => ({
 });
 
 const HomePage = (props) => {
-  const [settings, setSettings] = useState({email: ''});
+  const {page, setPage, setSettings} = useContext(GlobalContext);
   const [uiLoading, setUiLoading] = useState(true);
-  const {page, setPage} = useContext(GlobalContext);
   const [errorMsg, setErrorMsg] = useState('');
 
   const handlePageChange = (event, newPage) => {
