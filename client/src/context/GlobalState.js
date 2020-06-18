@@ -3,7 +3,10 @@ import AppReducer from "./AppReducer";
 
 const initialState = {
   records: null,
-  settings: null,
+  settings: {
+    email: '',
+    settings: []
+  },
   page: 'pressure'
 };
 

@@ -25,9 +25,11 @@ export default (state, action) => {
         records: action.payload
       };
     case "SET_SETTINGS":
+      let settings = action.payload;
+      settings.notifications = settings.notifications !== undefined ? settings.notifications : [];
       return {
         ...state,
-        settings: action.payload
+        settings: settings
       };
     default:
       return state;
