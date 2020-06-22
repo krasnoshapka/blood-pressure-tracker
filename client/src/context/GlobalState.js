@@ -1,3 +1,5 @@
+// TODO: This is global context provider. It should be refactored into separate context providers for each group of data.
+
 import React, { createContext, useReducer } from "react";
 import AppReducer from "./AppReducer";
 

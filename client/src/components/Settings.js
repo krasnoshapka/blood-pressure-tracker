@@ -73,7 +73,7 @@ const Settings = (props) => {
   };
 
   const { classes, ...rest } = props;
-  if (settings === null || !settings) {
+  if (!settings) {
     return (
       <div>Loading...</div>
     );
