@@ -6,6 +6,7 @@ import {defaultNotification} from "../constants/notification";
 import NotificationItem from "./NotificationItem";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Grid from "@material-ui/core/Grid";
+import messaging from "../util/firebase";
 
 const styles = (theme) => ({
   root: {
@@ -24,9 +25,26 @@ const SettingsNotifications = (props) => {
   const {settings, setSettings} = useContext(GlobalContext);
 
   const handleAddNotification = (event) => {
-    let notifications = settings.notifications !== undefined ? settings.notifications : [];
-    notifications.push({...defaultNotification, id: new Date()});
-    setSettings({...settings, notifications});
+    const notifications = settings.notifications;
+
+    messaging.requestPermission()
+      .then(() => {
+        return messaging.getToken();
+      })
+      .then((notificationsToken) => {
+        notifications.push({
+          ...defaultNotification,
+          id: new Date()
+        });
+        setSettings({
+          ...settings,
+          notifications,
+          notificationsToken
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   const { classes, ...rest } = props;

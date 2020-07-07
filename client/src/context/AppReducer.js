@@ -26,7 +26,8 @@ export default (state, action) => {
       };
     case "SET_SETTINGS":
       let settings = action.payload;
-      settings.notifications = settings.notifications !== undefined ? settings.notifications : [];
+      settings.notifications = settings.notifications ?? [];
+      settings.notificationsToken = settings.notificationsToken ?? '';
       return {
         ...state,
         settings: settings

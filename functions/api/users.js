@@ -91,7 +91,8 @@ exports.signUpUser = (request, response) => {
 exports.userSettings = (request, response) => {
   const userSettings = {
     email: request.body.email,
-    notifications: request.body.notifications
+    notificationsToken: request.body.notificationsToken ? request.body.notificationsToken : '',
+    notifications: request.body.notifications ? request.body.notifications : []
   };
 
   // TODO: Implement settings validation

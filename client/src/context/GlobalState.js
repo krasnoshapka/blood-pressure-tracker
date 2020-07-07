@@ -7,7 +7,8 @@ const initialState = {
   records: null,
   settings: {
     email: '',
-    settings: []
+    notifications: [],
+    notificationsToken: ''
   },
   page: 'pressure'
 };

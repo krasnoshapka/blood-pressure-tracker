@@ -55,7 +55,8 @@ const Settings = (props) => {
     axios.defaults.headers.common = { Authorization: `${authToken}` };
     const formRequest = {
       email: settings.email,
-      notifications: settings.notifications
+      notifications: settings.notifications,
+      notificationsToken: settings.notificationsToken
     };
     axios
       .post(`${API_ROUTE}/user/settings`, formRequest)
