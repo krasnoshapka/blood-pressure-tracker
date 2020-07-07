@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
@@ -11,6 +11,7 @@ import Paper from '@material-ui/core/Paper';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from '@material-ui/icons/Delete';
+import TextField from '@material-ui/core/TextField';
 
 import axios from 'axios';
 import { authMiddleWare } from '../util/auth';
@@ -30,12 +31,23 @@ const styles = ((theme) => ({
     table: {
       // minWidth: 650,
     },
+    container: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      marginBottom: 20,
+    },
+    textField: {
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
+      width: 200,
+    },
   })
 );
 
 const Records = (props) => {
   const {records, setRecords, deleteRecord} = useContext(GlobalContext);
   const [uiLoading, setUiLoading] = useState(false);
+  const {filters, setFilters} = useContext(GlobalContext);
 
   const handleDelete = (id) => {
     setUiLoading(true);
@@ -53,21 +65,32 @@ const Records = (props) => {
       });
   }
 
+  const loadRecords = (loadFilters) => {
+    setUiLoading(true);
+    authMiddleWare(props.history);
+    const authToken = localStorage.getItem('AuthToken');
+    axios.defaults.headers.common = {Authorization: `${authToken}`};
+    axios
+      .get(`${API_ROUTE}/records/`, {
+        params: {
+          start: loadFilters.start,
+          end: loadFilters.end
+        }
+      })
+      .then((response) => {
+        setRecords(response.data);
+        setUiLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   useEffect(() => {
+    // This check is needed to load records only once after user logged in or during page reload.
+    // In other cases when Records component is rendered it should use Context.
     if (records === null) {
-      setUiLoading(true);
-      authMiddleWare(props.history);
-      const authToken = localStorage.getItem('AuthToken');
-      axios.defaults.headers.common = {Authorization: `${authToken}`};
-      axios
-        .get(`${API_ROUTE}/records/`)
-        .then((response) => {
-          setRecords(response.data);
-          setUiLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      loadRecords(filters);
     }
   }, []);
 
@@ -90,6 +113,31 @@ const Records = (props) => {
   } else {
     return (
       <React.Fragment>
+        <form className={classes.container} noValidate>
+          <TextField
+            id="startDate"
+            label="Start date"
+            type="date"
+            defaultValue={filters.start}
+            className={classes.textField}
+            onChange={(event) => {setFilters({start: event.target.value, end: filters.end}, loadRecords)}}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+          <TextField
+            id="endDate"
+            label="End date"
+            type="date"
+            defaultValue={filters.end}
+            className={classes.textField}
+            onChange={(event) => {setFilters({start: filters.start, end: event.target.value}, loadRecords)}}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        </form>
+
         <Chart records={records} />
 
         <Typography paragraph>

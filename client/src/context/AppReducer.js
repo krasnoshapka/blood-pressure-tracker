@@ -19,6 +19,11 @@ export default (state, action) => {
           record => record.id !== action.payload
         )
       };
+    case "SET_FILTERS":
+      return {
+        ...state,
+        filters: {...state.filters, ...action.payload}
+      };
     case "SET_RECORDS":
       return {
         ...state,
