@@ -16,6 +16,7 @@ import axios from 'axios';
 import { authMiddleWare } from '../util/auth';
 import { API_ROUTE } from "../constants/routes";
 import {GlobalContext} from "../context/GlobalState";
+import Chart from "./Chart";
 
 const styles = ((theme) => ({
     uiProgess: {
@@ -89,6 +90,8 @@ const Records = (props) => {
   } else {
     return (
       <React.Fragment>
+        <Chart records={records} />
+
         <Typography paragraph>
           Recent pressure records
         </Typography>

@@ -89,6 +89,7 @@ const HomePage = (props) => {
               case 'pressure': return <Records />;
               case 'add': return <AddRecord />;
               case 'settings': return <Settings />;
+              default: return;
             }
           })()}
         </div>
