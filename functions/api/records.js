@@ -2,9 +2,14 @@ const { db } = require('../util/admin');
 
 exports.getAllRecords = (request, response) => {
   const user = request.user.uid;
+  const start = new Date(request.query.start);
+  const end = new Date (request.query.end);
+
   db
     .collection('records')
     .where('user', '==', user)
+    .where('datetime', '>=', start)
+    .where('datetime', '<=', end)
     .orderBy('datetime', 'desc')
     .get()
     .then((data) => {
@@ -12,7 +17,7 @@ exports.getAllRecords = (request, response) => {
       data.forEach((doc) => {
         records.push({
           id: doc.id,
-          datetime: doc.data().datetime,
+          datetime: doc.data().datetime.toDate(),
           sys: doc.data().sys,
           dia: doc.data().dia,
           pul: doc.data().pul
@@ -44,7 +49,7 @@ exports.postRecord = (request, response) => {
     sys: request.body.sys,
     dia: request.body.dia,
     pul: request.body.pul,
-    datetime: new Date().toISOString()
+    datetime: new Date()
   }
   db
     .collection('records')
