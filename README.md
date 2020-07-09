@@ -10,7 +10,7 @@ URL: https://blood-pressure-tracker-77c8c.web.app/
 
 - Sign up, sign in, sign out (Firebase Authentification).
 - Add, view and delete blood pressure records (Firebase Functions for API and NoSQL Database).
-- Pressure statistics and graphs for any period of time (planned).
+- Pressure statistics and graphs for any period of time.
 - Push notifications for reminding to track a pressure (planned).
 - Offline mode (planned).
 

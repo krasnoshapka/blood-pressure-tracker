@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 
+import AppBar from "@material-ui/core/AppBar";
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -20,15 +21,16 @@ import { HOME_ROUTE, API_ROUTE } from "../constants/routes";
 
 const styles = (theme) => ({
   root: {
-    display: 'flex'
+    display: 'flex',
+    paddingTop: 60,
+    paddingBottom: 60
   },
   content: {
     flexGrow: 1,
     padding: theme.spacing(2)
   },
-  bottomMenu: {
-    width: '100%',
-    position: 'fixed',
+  bottomBar: {
+    top: 'auto',
     bottom: 0,
   },
   uiProgess: {
@@ -38,7 +40,7 @@ const styles = (theme) => ({
     width: '31px',
     left: '50%',
     top: '35%'
-  },
+  }
 });
 
 const HomePage = (props) => {
@@ -82,24 +84,29 @@ const HomePage = (props) => {
     );
   } else {
     return (
-      <div className={classes.root}>
-        <div className={classes.content}>
-          {(() => {
-            switch (page) {
-              case 'pressure': return <Records />;
-              case 'add': return <AddRecord />;
-              case 'settings': return <Settings />;
-              default: return;
-            }
-          })()}
+      <React.Fragment>
+        <div className={classes.root}>
+          <div className={classes.content}>
+            {(() => {
+              switch (page) {
+                case 'pressure': return <Records />;
+                case 'add': return <AddRecord />;
+                case 'settings': return <Settings />;
+                default: return;
+              }
+            })()}
+          </div>
         </div>
-        <BottomNavigation value={page} onChange={handlePageChange} className={classes.bottomMenu}>
-          <BottomNavigationAction label="Pressure" value="pressure" icon={<NotesIcon />} />
-          <BottomNavigationAction label="Add" value="add" icon={<AddCircleIcon />} />
-          <BottomNavigationAction label="Settings" value="settings" icon={<AccountBoxIcon />} />
-          <BottomNavigationAction label="Logout" value="logout" icon={<ExitToAppIcon />} />
-        </BottomNavigation>
-      </div>
+        <AppBar position="fixed" className={classes.bottomBar}>
+          <BottomNavigation value={page} onChange={handlePageChange} className={classes.bottomMenu}>
+            <BottomNavigationAction label="Pressure" value="pressure" icon={<NotesIcon />} />
+            <BottomNavigationAction label="Add" value="add" icon={<AddCircleIcon />} />
+            <BottomNavigationAction label="Settings" value="settings" icon={<AccountBoxIcon />} />
+            <BottomNavigationAction label="Logout" value="logout" icon={<ExitToAppIcon />} />
+          </BottomNavigation>
+        </AppBar>
+      </React.Fragment>
+
     );
   }
 }

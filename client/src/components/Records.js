@@ -95,6 +95,32 @@ const Records = (props) => {
   }, []);
 
   const { classes } = props;
+  const Filters = (
+    <form className={classes.container} noValidate>
+      <TextField
+        id="startDate"
+        label="Start date"
+        type="date"
+        defaultValue={filters.start}
+        className={classes.textField}
+        onChange={(event) => {setFilters({start: event.target.value, end: filters.end}, loadRecords)}}
+        InputLabelProps={{
+          shrink: true,
+        }}
+      />
+      <TextField
+        id="endDate"
+        label="End date"
+        type="date"
+        defaultValue={filters.end}
+        className={classes.textField}
+        onChange={(event) => {setFilters({start: filters.start, end: event.target.value}, loadRecords)}}
+        InputLabelProps={{
+          shrink: true,
+        }}
+      />
+    </form>
+  );
 
   if (records === null || uiLoading === true) {
     return (
@@ -105,6 +131,7 @@ const Records = (props) => {
   } else if (records.length === 0) {
     return (
       <React.Fragment>
+        {Filters}
         <Typography paragraph>
           No pressure records. Please add using button below.
         </Typography>
@@ -113,30 +140,7 @@ const Records = (props) => {
   } else {
     return (
       <React.Fragment>
-        <form className={classes.container} noValidate>
-          <TextField
-            id="startDate"
-            label="Start date"
-            type="date"
-            defaultValue={filters.start}
-            className={classes.textField}
-            onChange={(event) => {setFilters({start: event.target.value, end: filters.end}, loadRecords)}}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-          <TextField
-            id="endDate"
-            label="End date"
-            type="date"
-            defaultValue={filters.end}
-            className={classes.textField}
-            onChange={(event) => {setFilters({start: filters.start, end: event.target.value}, loadRecords)}}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-        </form>
+        {Filters}
 
         <Chart records={records} />
 

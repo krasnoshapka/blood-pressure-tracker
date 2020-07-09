@@ -6,7 +6,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 
 const styles = (theme) => ({
-  appBar: {
+  topBar: {
     zIndex: theme.zIndex.drawer + 1
   }
 });
@@ -16,7 +16,7 @@ const Header = (props) => {
   return (
     <React.Fragment>
       <CssBaseline/>
-      <AppBar position="static" className={classes.appBar}>
+      <AppBar position="fixed" className={classes.topBar}>
         <Toolbar>
           <Typography variant="h6" noWrap>
             Blood Pressure Tracker
