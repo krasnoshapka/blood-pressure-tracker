@@ -21,25 +21,22 @@ import { HOME_ROUTE, API_ROUTE } from "../constants/routes";
 
 const styles = (theme) => ({
   root: {
-    display: 'flex',
-    paddingTop: 60,
-    paddingBottom: 60
+    position: 'relative',
+    minHeight: '100vh',
+    margin: '64px 0'
   },
   content: {
-    flexGrow: 1,
     padding: theme.spacing(2)
   },
   bottomBar: {
     top: 'auto',
     bottom: 0,
   },
-  uiProgess: {
-    position: 'fixed',
+  uiProgress: {
+    position: 'absolute',
     zIndex: '1000',
-    height: '31px',
-    width: '31px',
-    left: '50%',
-    top: '35%'
+    top: 'calc(50% - 75px)',
+    left: 'calc(50% - 75px)'
   }
 });
 
@@ -76,16 +73,13 @@ const HomePage = (props) => {
   }, []);
 
   const { classes } = props;
-  if (uiLoading === true) {
-    return (
+
+  return (
+    <React.Fragment>
       <div className={classes.root}>
-        {uiLoading && <CircularProgress size={150} className={classes.uiProgess} />}
-      </div>
-    );
-  } else {
-    return (
-      <React.Fragment>
-        <div className={classes.root}>
+        {uiLoading ? (
+          <CircularProgress size={150} className={classes.uiProgress} />
+        ) : (
           <div className={classes.content}>
             {(() => {
               switch (page) {
@@ -96,19 +90,18 @@ const HomePage = (props) => {
               }
             })()}
           </div>
-        </div>
-        <AppBar position="fixed" className={classes.bottomBar}>
-          <BottomNavigation value={page} onChange={handlePageChange} className={classes.bottomMenu}>
-            <BottomNavigationAction label="Pressure" value="pressure" icon={<NotesIcon />} />
-            <BottomNavigationAction label="Add" value="add" icon={<AddCircleIcon />} />
-            <BottomNavigationAction label="Settings" value="settings" icon={<AccountBoxIcon />} />
-            <BottomNavigationAction label="Logout" value="logout" icon={<ExitToAppIcon />} />
-          </BottomNavigation>
-        </AppBar>
-      </React.Fragment>
-
-    );
-  }
+        )}
+      </div>
+      <AppBar position="fixed" className={classes.bottomBar}>
+        <BottomNavigation value={page} onChange={handlePageChange} className={classes.bottomMenu}>
+          <BottomNavigationAction label="Pressure" value="pressure" icon={<NotesIcon />} />
+          <BottomNavigationAction label="Add" value="add" icon={<AddCircleIcon />} />
+          <BottomNavigationAction label="Settings" value="settings" icon={<AccountBoxIcon />} />
+          <BottomNavigationAction label="Logout" value="logout" icon={<ExitToAppIcon />} />
+        </BottomNavigation>
+      </AppBar>
+    </React.Fragment>
+  );
 }
 
 export default withStyles(styles)(HomePage);
