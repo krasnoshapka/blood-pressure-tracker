@@ -8,12 +8,19 @@ import {GlobalContext} from "../context/GlobalState";
 
 const styles = (theme) => ({
   formControl: {
-    margin: theme.spacing(3),
+    margin: theme.spacing(1),
+  },
+  weekday: {
+    width: '45%',
   },
   timeField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
     width: 200,
+  },
+  delete: {
+    alignSelf: 'flex-end',
+    flex: '0 0 30px'
   }
 });
 
@@ -49,46 +56,44 @@ const NotificationItem = ({notification, classes}) => {
   };
 
   return (
-    <Grid item xs={12}>
-      <FormControl component="fieldset" className={classes.formControl}>
-        <FormLabel component="legend">Select day(s) and time</FormLabel>
-        <FormGroup>
-          <Grid container justify="space-around">
-            { weekDays.map(({name, title}) => {
-                return (
-                  <FormControlLabel
-                    key={`${notification.id}-${name}`}
-                    control={<Checkbox checked={notification[name]} onChange={handleChange} name={name} />}
-                    label={title}
-                  />
-                );
-              }) }
-          </Grid>
-        </FormGroup>
-        <TextField
-          id="time"
-          label="Time"
-          type="time"
-          defaultValue="07:30"
-          className={classes.timeField}
-          onChange={handleChange}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          inputProps={{
-            step: 300, // 5 min
-          }}
-        />
-        <IconButton
-          aria-label="delete"
-          size="small"
-          variant="contained"
-          color="primary"
-          onClick={handleDelete}>
-          <DeleteIcon />
-        </IconButton>
-      </FormControl>
-    </Grid>
+    <FormControl component="fieldset" className={classes.formControl}>
+      <FormLabel component="legend">Select day(s) and time</FormLabel>
+      <FormGroup>
+        <Grid container justify="space-around" justify="flex-start" wrap="wrap">
+          { weekDays.map(({name, title}) => (
+            <FormControlLabel
+              key={`${notification.id}-${name}`}
+              control={<Checkbox checked={notification[name]} onChange={handleChange} name={name} />}
+              label={title}
+              className={classes.weekday}
+            />
+          ))}
+        </Grid>
+      </FormGroup>
+      <TextField
+        id="time"
+        label="Time"
+        type="time"
+        defaultValue="07:30"
+        className={classes.timeField}
+        onChange={handleChange}
+        InputLabelProps={{
+          shrink: true,
+        }}
+        inputProps={{
+          step: 300, // 5 min
+        }}
+      />
+      <IconButton
+        aria-label="delete"
+        size="small"
+        variant="contained"
+        className={classes.delete}
+        color="primary"
+        onClick={handleDelete}>
+        <DeleteIcon />
+      </IconButton>
+    </FormControl>
   );
 }
 
