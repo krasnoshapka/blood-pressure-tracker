@@ -21,12 +21,14 @@ import { HOME_ROUTE, API_ROUTE } from "../constants/routes";
 
 const styles = (theme) => ({
   root: {
+    display: 'flex',
+    flexDirection: 'column',
     position: 'relative',
     minHeight: '100vh',
     margin: '64px 0'
   },
   content: {
-    padding: theme.spacing(2)
+    padding: theme.spacing(1)
   },
   bottomBar: {
     top: 'auto',

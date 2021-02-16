@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useCallback } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
@@ -20,26 +20,17 @@ import {GlobalContext} from "../context/GlobalState";
 import Chart from "./Chart";
 
 const styles = ((theme) => ({
-    uiProgess: {
-      position: 'fixed',
+    uiProgress: {
+      position: 'absolute',
       zIndex: '1000',
-      height: '31px',
-      width: '31px',
-      left: '50%',
-      top: '35%'
+      top: 'calc(50% - 75px)',
+      left: 'calc(50% - 75px)'
     },
-    table: {
-      // minWidth: 650,
-    },
-    container: {
+    filters: {
       display: 'flex',
       flexWrap: 'wrap',
+      justifyContent: 'flex-end',
       marginBottom: 20,
-    },
-    textField: {
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
-      width: 200,
     },
   })
 );
@@ -96,13 +87,13 @@ const Records = (props) => {
 
   const { classes } = props;
   const Filters = (
-    <form className={classes.container} noValidate>
+    <form className={classes.filters} noValidate>
       <TextField
         id="startDate"
         label="Start date"
         type="date"
         defaultValue={filters.start}
-        className={classes.textField}
+        margin="normal"
         onChange={(event) => {setFilters({start: event.target.value, end: filters.end}, loadRecords)}}
         InputLabelProps={{
           shrink: true,
@@ -113,7 +104,7 @@ const Records = (props) => {
         label="End date"
         type="date"
         defaultValue={filters.end}
-        className={classes.textField}
+        margin="normal"
         onChange={(event) => {setFilters({start: filters.start, end: event.target.value}, loadRecords)}}
         InputLabelProps={{
           shrink: true,
@@ -124,9 +115,7 @@ const Records = (props) => {
 
   if (records === null || uiLoading === true) {
     return (
-      <React.Fragment>
-        {uiLoading && <CircularProgress size={150} className={classes.uiProgess} />}
-      </React.Fragment>
+      <CircularProgress size={150} className={classes.uiProgress} />
     );
   } else if (records.length === 0) {
     return (
@@ -149,7 +138,7 @@ const Records = (props) => {
         </Typography>
 
         <TableContainer component={Paper}>
-          <Table className={classes.table} size="small" aria-label="blood pressure table">
+          <Table size="small" aria-label="blood pressure table">
             <TableHead>
               <TableRow>
                 <TableCell>Date</TableCell>
