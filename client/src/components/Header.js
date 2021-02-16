@@ -15,7 +15,7 @@ const Header = (props) => {
   return (
     <AppBar position="fixed" className={classes.topBar}>
       <Toolbar>
-        <Typography variant="h4" noWrap>
+        <Typography variant="h5" noWrap>
           Blood Pressure Tracker
         </Typography>
       </Toolbar>

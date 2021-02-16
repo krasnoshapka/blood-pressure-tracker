@@ -13,9 +13,12 @@ import {GlobalContext} from "../context/GlobalState";
 
 const styles = ((theme) => ({
     form: {
-      width: '98%',
-      marginLeft: 13,
-      marginTop: theme.spacing(3)
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center'
+    },
+    submit: {
+      marginTop: theme.spacing(3),
     }
   })
 );
@@ -61,63 +64,54 @@ const AddRecord = (props) => {
   const {classes} = props;
 
   return (
-    <React.Fragment>
+    <form className={classes.form} noValidate>
       <Typography paragraph>
         Enter your pressure
       </Typography>
-      <form className={classes.form} noValidate>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextField
-              variant="outlined"
-              required
-              fullWidth
-              id="sys"
-              label="Systolic"
-              name="sys"
-              autoComplete="Systolic"
-              helperText={errors.sys}
-              value={record.sys}
-              error={errors.sys ? true : false}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              variant="outlined"
-              required
-              fullWidth
-              id="dia"
-              label="Diastolic"
-              name="dia"
-              autoComplete="Diastolic"
-              helperText={errors.dia}
-              value={record.dia}
-              error={errors.dia ? true : false}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              variant="outlined"
-              required
-              fullWidth
-              id="pul"
-              label="Pulse"
-              name="pul"
-              autoComplete="Pulse"
-              helperText={errors.pul}
-              value={record.pul}
-              error={errors.pul ? true : false}
-              onChange={handleChange}
-            />
-          </Grid>
-         <Grid item xs={12}>
-            <Button variant="contained" color="primary" size="large" onClick={handleSubmit} startIcon={<SaveIcon />} >Save</Button>
-          </Grid>
-        </Grid>
-      </form>
-    </React.Fragment>
+      <TextField
+        variant="outlined"
+        required
+        fullWidth
+        margin="normal"
+        id="sys"
+        label="Systolic"
+        name="sys"
+        autoComplete="Systolic"
+        helperText={errors.sys}
+        value={record.sys}
+        error={errors.sys ? true : false}
+        onChange={handleChange}
+      />
+      <TextField
+        variant="outlined"
+        required
+        fullWidth
+        margin="normal"
+        id="dia"
+        label="Diastolic"
+        name="dia"
+        autoComplete="Diastolic"
+        helperText={errors.dia}
+        value={record.dia}
+        error={errors.dia ? true : false}
+        onChange={handleChange}
+      />
+      <TextField
+        variant="outlined"
+        required
+        fullWidth
+        margin="normal"
+        id="pul"
+        label="Pulse"
+        name="pul"
+        autoComplete="Pulse"
+        helperText={errors.pul}
+        value={record.pul}
+        error={errors.pul ? true : false}
+        onChange={handleChange}
+      />
+      <Button variant="contained" color="primary" size="large" onClick={handleSubmit} startIcon={<SaveIcon />} className={classes.submit}>Save</Button>
+    </form>
   )
 }
 
