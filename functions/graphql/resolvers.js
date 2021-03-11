@@ -1,7 +1,9 @@
 const { db } = require('../util/admin');
 
+/* USERS */
+
 async function user(parent, args, context, info) {
-  const uid = parent ? parent.uid : args.uid;
+  const uid = parent ? parent.uid : context.uid;
   try {
     const doc = await db.doc(`/users/${uid}`).get();
     if (doc.exists) {
@@ -28,9 +30,11 @@ async function notifications(parent, args, context, info) {
   }
 }
 
+/* RECORDS */
+
 async function records(parent, args, context, info) {
   try {
-    let queryRef = db.collection('records').where('user', '==', args.uid);
+    let queryRef = db.collection('records').where('user', '==', context.uid);
     if (args.start) {
       queryRef = queryRef.where('datetime', '>=', new Date(args.start));
     }
@@ -42,7 +46,7 @@ async function records(parent, args, context, info) {
     data.forEach((doc) => {
       records.push({
         id: doc.id,
-        uid: args.uid,
+        uid: context.uid,
         datetime: doc.data().datetime.toDate(),
         sys: doc.data().sys,
         dia: doc.data().dia,
@@ -56,7 +60,63 @@ async function records(parent, args, context, info) {
   }
 }
 
+async function addRecord(parent, args, context, info) {
+  // Todo: implement better validation of args.
+  if (args.sys <= 0) {
+    throw new Error('Sys pressure must not be negative');
+  }
+
+  if (args.dia <= 0) {
+    throw new Error('Dia pressure must not be negative');
+  }
+
+  if (args.pul <= 0) {
+    throw new Error('Pulse must not be negative');
+  }
+
+  const newRecord = {
+    user: context.uid,
+    sys: args.sys,
+    dia: args.dia,
+    pul: args.pul,
+    datetime: new Date()
+  }
+  try {
+    const doc = await db.collection('records').add(newRecord);
+    if (doc.id) {
+      newRecord.id = doc.id;
+      return newRecord;
+    }
+  } catch (e) {
+    console.error(e);
+    throw new Error(e.message);
+  }
+}
+
+async function deleteRecord(parent, args, context, info) {
+  try {
+    const doc = await db.doc(`/records/${args.id}`).get();
+
+    if (!doc.exists) {
+      throw new Error('Record not found');
+    }
+    if (doc.data().user !== context.uid) {
+      throw new Error('UnAuthorized');
+    }
+
+    const res = await db.doc(`/records/${args.id}`).delete();
+    return true;
+  } catch (e) {
+    console.error(e);
+    throw new Error(e.message);
+  }
+}
+
 const resolvers = {
+  Mutation: {
+    addRecord,
+    deleteRecord
+  },
   Query: {
     user,
     records

@@ -27,10 +27,15 @@ const typeDefs = gql`
     pul: Int!
     datetime: String!
   }
-
+  
+  type Mutation {
+    addRecord(sys: Int!, dia: Int!, pul: Int!): Record
+    deleteRecord(id: ID!): String
+  }
+  
   type Query {
-    user(uid: ID!): User
-    records(uid: ID!, start: String, end: String): [Record]
+    user: User
+    records(start: String, end: String): [Record]
   }
 `;
 
