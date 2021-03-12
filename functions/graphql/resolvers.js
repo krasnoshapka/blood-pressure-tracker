@@ -6,7 +6,7 @@ const { db, firebase } = require('../util/firebase');
 const { validateLoginData, validateSignUpData } = require('../util/validators');
 
 async function loginUser(parent, args, context, info) {
-  const { valid, errors } = validateLoginData({...args});
+  const { valid, errors } = validateLoginData(args);
   if (!valid) throw new ValidationError(JSON.stringify(errors));
 
   try {
@@ -15,6 +15,33 @@ async function loginUser(parent, args, context, info) {
       return res.user.getIdToken();
     }
   } catch (e) {
+    console.error(e);
+    throw new ValidationError(e.message);
+  }
+}
+
+async function signUpUser(parent, args, context, info) {
+  const { valid, errors } = validateSignUpData(args);
+  if (!valid) throw new ValidationError(JSON.stringify(errors));
+
+
+  try {
+    // Check that user already exist
+    const check = await db.collection('users').where('email', '==', args.email).get();
+    if (check._size > 0) {
+      throw new ValidationError('this email is already registered');
+    } else {
+      const res = await firebase.auth().createUserWithEmailAndPassword(args.email, args.password);
+      if (res.user) {
+        // Create user in database
+        await db.doc(`/users/${res.user.uid}`).set({
+          email: args.email
+        });
+
+        return res.user.getIdToken();
+      }
+    }
+  } catch(e) {
     console.error(e);
     throw new ValidationError(e.message);
   }
@@ -134,7 +161,8 @@ const resolvers = {
   Mutation: {
     addRecord,
     deleteRecord,
-    loginUser
+    loginUser,
+    signUpUser
   },
   Query: {
     user,

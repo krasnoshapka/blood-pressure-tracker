@@ -33,6 +33,7 @@ const typeDefs = gql`
     deleteRecord(id: ID!): String
     
     loginUser(email: String!, password: String!): String
+    signUpUser(email: String!, password: String!, confirmPassword: String!): String
   }
   
   type Query {
