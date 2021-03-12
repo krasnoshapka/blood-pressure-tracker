@@ -1,16 +1,25 @@
 const app = require('express')();
-const {ApolloServer} = require('apollo-server-express');
+const {ApolloServer, AuthenticationError} = require('apollo-server-express');
 const typeDefs = require('./schema');
 const resolvers = require('./resolvers');
-const { admin, db } = require('../util/admin');
+const { admin, db } = require('../util/firebase');
 
 async function authContext(req) {
+  // Todo: Maybe there is a proper way to define that method doesn't require auth.
+  const authExceptions = [
+    'loginUser',
+    'signUpUser'
+  ];
+  if (authExceptions.some((el) => req.body.query.includes(el))) {
+    return {};
+  }
+
   let token = '';
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
     token = req.headers.authorization.split('Bearer ')[1];
   } else {
     console.error('No token found');
-    throw new Error('Unauthorized');
+    throw new AuthenticationError('Unauthorized');
   }
   let doc;
   try {
@@ -26,7 +35,7 @@ async function authContext(req) {
     }
   } else {
     console.error('User not found');
-    throw new Error('Unauthorized');
+    throw new AuthenticationError('Unauthorized');
   }
 }
 

@@ -1,6 +1,24 @@
-const { db } = require('../util/admin');
+const {ValidationError, AuthenticationError} = require('apollo-server-express');
+const { db, firebase } = require('../util/firebase');
 
 /* USERS */
+
+const { validateLoginData, validateSignUpData } = require('../util/validators');
+
+async function loginUser(parent, args, context, info) {
+  const { valid, errors } = validateLoginData({...args});
+  if (!valid) throw new ValidationError(JSON.stringify(errors));
+
+  try {
+    const res = await firebase.auth().signInWithEmailAndPassword(args.email, args.password);
+    if (res.user) {
+      return res.user.getIdToken();
+    }
+  } catch (e) {
+    console.error(e);
+    throw new ValidationError(e.message);
+  }
+}
 
 async function user(parent, args, context, info) {
   const uid = parent ? parent.uid : context.uid;
@@ -63,15 +81,15 @@ async function records(parent, args, context, info) {
 async function addRecord(parent, args, context, info) {
   // Todo: implement better validation of args.
   if (args.sys <= 0) {
-    throw new Error('Sys pressure must not be negative');
+    throw new ValidationError('Sys pressure must not be negative');
   }
 
   if (args.dia <= 0) {
-    throw new Error('Dia pressure must not be negative');
+    throw new ValidationError('Dia pressure must not be negative');
   }
 
   if (args.pul <= 0) {
-    throw new Error('Pulse must not be negative');
+    throw new ValidationError('Pulse must not be negative');
   }
 
   const newRecord = {
@@ -98,10 +116,10 @@ async function deleteRecord(parent, args, context, info) {
     const doc = await db.doc(`/records/${args.id}`).get();
 
     if (!doc.exists) {
-      throw new Error('Record not found');
+      throw new ValidationError('Record not found');
     }
     if (doc.data().user !== context.uid) {
-      throw new Error('UnAuthorized');
+      throw new AuthenticationError('UnAuthorized');
     }
 
     const res = await db.doc(`/records/${args.id}`).delete();
@@ -115,7 +133,8 @@ async function deleteRecord(parent, args, context, info) {
 const resolvers = {
   Mutation: {
     addRecord,
-    deleteRecord
+    deleteRecord,
+    loginUser
   },
   Query: {
     user,

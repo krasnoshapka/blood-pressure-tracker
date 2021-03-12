@@ -1,4 +1,4 @@
-const { db } = require('../util/admin');
+const { db } = require('../util/firebase');
 
 exports.getAllRecords = (request, response) => {
   const user = request.user.uid;

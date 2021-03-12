@@ -31,6 +31,8 @@ const typeDefs = gql`
   type Mutation {
     addRecord(sys: Int!, dia: Int!, pul: Int!): Record
     deleteRecord(id: ID!): String
+    
+    loginUser(email: String!, password: String!): String
   }
   
   type Query {

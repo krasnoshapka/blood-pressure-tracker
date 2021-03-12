@@ -1,4 +1,4 @@
-const { admin, db } = require('./admin');
+const { admin, db } = require('./firebase');
 
 module.exports = (request, response, next) => {
   let idToken;
