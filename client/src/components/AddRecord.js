@@ -6,7 +6,6 @@ import TextField from '@material-ui/core/TextField';
 import SaveIcon from '@material-ui/icons/Save';
 
 import axios from 'axios';
-import { authMiddleWare } from '../util/auth';
 import { API_ROUTE } from "../constants/routes";
 import {GlobalContext} from "../context/GlobalState";
 
@@ -38,7 +37,7 @@ const AddRecord = (props) => {
   };
 
   const handleSubmit = (event) => {
-    authMiddleWare(props.history);
+    // authMiddleWare(props.history);
     event.preventDefault();
     const newRecord = {
       sys: record.sys,

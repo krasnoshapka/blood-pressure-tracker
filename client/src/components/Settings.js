@@ -9,7 +9,7 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import axios from 'axios';
-import {authMiddleWare} from '../util/auth';
+// import {authMiddleWare} from '../util/auth';
 import {GlobalContext} from "../context/GlobalState";
 import {HOME_ROUTE, API_ROUTE} from "../constants/routes";
 import SettingsBasic from "./SettingsBasic";
@@ -56,7 +56,7 @@ const Settings = (props) => {
   const updateFormValues = (event) => {
     event.preventDefault();
     setButtonLoading(true);
-    authMiddleWare(props.history);
+    // authMiddleWare(props.history);
     const authToken = localStorage.getItem('AuthToken');
     axios.defaults.headers.common = { Authorization: `${authToken}` };
     const formRequest = {

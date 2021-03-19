@@ -10,8 +10,8 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import Container from '@material-ui/core/Container';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import axios from 'axios';
-import {HOME_ROUTE, API_ROUTE} from '../constants/routes';
+import {HOME_ROUTE, SIGNUP_ROUTE} from '../constants/routes';
+import {useAuth} from "../context/AuthContext";
 
 const styles = (theme) => ({
   container: {
@@ -40,13 +40,12 @@ const styles = (theme) => ({
   }
 });
 
-const LoginPage = (props) => {
+const SigninPage = (props) => {
   const [userData, setUserData] = useState({
     email: '',
     password: '',
   });
-  const [errors, setErrors] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const {loading, signin, signinError: error} = useAuth();
 
   const handleChange = (event) => {
     let newUserData = {...userData};
@@ -56,18 +55,20 @@ const LoginPage = (props) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setLoading(true);
-    axios
-      .post(`${API_ROUTE}/user/login`, userData)
-      .then((response) => {
-        localStorage.setItem('AuthToken', `Bearer ${response.data.token}`);
-        setLoading(false);
-        props.history.push(HOME_ROUTE);
-      })
-      .catch((error) => {
-        setErrors(error.response.data);
-        setLoading(false);
-      });
+    // LEGACY REST API
+    // axios
+    //   .post(`${API_ROUTE}/user/login`, userData)
+    //   .then((response) => {
+    //     localStorage.setItem('AuthToken', `Bearer ${response.data.token}`);
+    //   })
+    //   .catch((error) => {
+    //   });
+
+    signin(userData.email, userData.password).then(() => {
+      props.history.push(HOME_ROUTE);
+    }).catch((e) => {
+      console.log(e);
+    });
   };
 
   const { classes } = props;
@@ -80,9 +81,9 @@ const LoginPage = (props) => {
         Login
       </Typography>
       <form className={classes.form} noValidate>
-        {errors.general && (
+        {error && (
           <Typography variant="body2" className={classes.customError}>
-            {errors.general}
+            {error.message}
           </Typography>
         )}
         <TextField
@@ -95,8 +96,8 @@ const LoginPage = (props) => {
           name="email"
           autoComplete="email"
           autoFocus
-          helperText={errors.email}
-          error={errors.email ? true : false}
+          helperText={error && error.email}
+          error={error && error.email}
           onChange={handleChange}
         />
         <TextField
@@ -109,8 +110,8 @@ const LoginPage = (props) => {
           type="password"
           id="password"
           autoComplete="current-password"
-          helperText={errors.password}
-          error={errors.password ? true : false}
+          helperText={error && error.password}
+          error={error && error.password}
           onChange={handleChange}
         />
         <Button
@@ -128,7 +129,7 @@ const LoginPage = (props) => {
       </form>
 
       <div>
-        <Link href="signup" variant="body2">
+        <Link href={SIGNUP_ROUTE} variant="body2">
           {"Don't have an account? Sign Up"}
         </Link>
       </div>
@@ -136,4 +137,4 @@ const LoginPage = (props) => {
   );
 }
 
-export default withStyles(styles)(LoginPage);
+export default withStyles(styles)(SigninPage);

@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import React, { useContext } from 'react';
 
 import AppBar from "@material-ui/core/AppBar";
 import BottomNavigation from '@material-ui/core/BottomNavigation';
@@ -15,9 +14,11 @@ import Settings from '../components/Settings';
 import Records from '../components/Records';
 import AddRecord from "../components/AddRecord";
 
-import { authMiddleWare } from '../util/auth';
 import {GlobalContext} from "../context/GlobalState";
-import { HOME_ROUTE, API_ROUTE } from "../constants/routes";
+import {useAuth} from "../context/AuthContext";
+import {SIGNIN_ROUTE} from "../constants/routes";
+
+import {RecordsProvider} from "../context/RecordsContext";
 
 const styles = (theme) => ({
   root: {
@@ -43,50 +44,50 @@ const styles = (theme) => ({
 });
 
 const HomePage = (props) => {
-  const {page, setPage, setSettings} = useContext(GlobalContext);
-  const [uiLoading, setUiLoading] = useState(true);
-  const [errorMsg, setErrorMsg] = useState('');
+  const {page, setPage} = useContext(GlobalContext);
+  const {loading, logout, error: userError} = useAuth();
+  // Redirect to signin page when token is expired or other error occurred.
+  if (userError) {
+    props.history.push(SIGNIN_ROUTE);
+  }
 
   const handlePageChange = (event, newPage) => {
     if (newPage === 'logout') {
-      localStorage.removeItem('AuthToken');
-      props.history.push(`${HOME_ROUTE}/login`);
+      logout();
+      props.history.push(SIGNIN_ROUTE);
     }
     setPage(newPage);
   }
 
-  useEffect(() => {
-    authMiddleWare(props.history);
-    const authToken = localStorage.getItem('AuthToken');
-    axios.defaults.headers.common = { Authorization: `${authToken}` };
-    axios
-      .get(`${API_ROUTE}/user/`)
-      .then((response) => {
-        setSettings(response.data);
-        setUiLoading(false)
-      })
-      .catch((error) => {
-        if (error.response.status === 403) {
-          props.history.push(`${HOME_ROUTE}/login`)
-        }
-        console.log(error);
-        setErrorMsg('Error in retrieving the data');
-      });
-  }, []);
+  // LEGACY REST API
+  // useEffect(() => {
+  //   const authToken = localStorage.getItem('AuthToken');
+  //   axios.defaults.headers.common = { Authorization: `${authToken}` };
+  //   axios
+  //     .get(`${API_ROUTE}/user/`)
+  //     .then((response) => {
+  //     })
+  //     .catch((error) => {
+  //       if (error.response.status === 403) {
+  //         props.history.push(`${HOME_ROUTE}/login`)
+  //       }
+  //       console.log(error);
+  //     });
+  // }, []);
 
   const { classes } = props;
 
   return (
-    <React.Fragment>
+    <>
       <div className={classes.root}>
-        {uiLoading ? (
+        {loading ? (
           <CircularProgress size={150} className={classes.uiProgress} />
         ) : (
           <div className={classes.content}>
             {(() => {
               switch (page) {
-                case 'pressure': return <Records />;
-                case 'add': return <AddRecord />;
+                case 'pressure': return <RecordsProvider><Records /></RecordsProvider>;
+                case 'add': return <RecordsProvider><AddRecord /></RecordsProvider>;
                 case 'settings': return <Settings />;
                 default: return;
               }
@@ -102,7 +103,7 @@ const HomePage = (props) => {
           <BottomNavigationAction label="Logout" value="logout" icon={<ExitToAppIcon />} />
         </BottomNavigation>
       </AppBar>
-    </React.Fragment>
+    </>
   );
 }
 

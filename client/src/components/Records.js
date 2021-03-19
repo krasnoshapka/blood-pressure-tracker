@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
@@ -13,11 +13,8 @@ import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
 
-import axios from 'axios';
-import { authMiddleWare } from '../util/auth';
-import { API_ROUTE } from "../constants/routes";
-import {GlobalContext} from "../context/GlobalState";
 import Chart from "./Chart";
+import {useRecords} from "../context/RecordsContext";
 
 const styles = ((theme) => ({
     uiProgress: {
@@ -36,54 +33,43 @@ const styles = ((theme) => ({
 );
 
 const Records = (props) => {
-  const {records, setRecords, deleteRecord} = useContext(GlobalContext);
-  const [uiLoading, setUiLoading] = useState(false);
-  const {filters, setFilters} = useContext(GlobalContext);
+  const {loading, records, filters, setFilters} = useRecords();
 
   const handleDelete = (id) => {
-    setUiLoading(true);
-    authMiddleWare(props.history);
-    const authToken = localStorage.getItem('AuthToken');
-    axios.defaults.headers.common = { Authorization: `${authToken}` };
-    axios
-      .delete(`${API_ROUTE}/records/${id}`)
-      .then(() => {
-        deleteRecord(id);
-        setUiLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // LEGACY REST API
+    // const authToken = localStorage.getItem('AuthToken');
+    // axios.defaults.headers.common = { Authorization: `${authToken}` };
+    // axios
+    //   .delete(`${API_ROUTE}/records/${id}`)
+    //   .then(() => {
+    //     deleteRecord(id);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   }
 
-  const loadRecords = (loadFilters) => {
-    setUiLoading(true);
-    authMiddleWare(props.history);
-    const authToken = localStorage.getItem('AuthToken');
-    axios.defaults.headers.common = {Authorization: `${authToken}`};
-    axios
-      .get(`${API_ROUTE}/records/`, {
-        params: {
-          start: loadFilters.start,
-          end: loadFilters.end
-        }
-      })
-      .then((response) => {
-        setRecords(response.data);
-        setUiLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  useEffect(() => {
-    // This check is needed to load records only once after user logged in or during page reload.
-    // In other cases when Records component is rendered it should use Context.
-    if (records === null) {
-      loadRecords(filters);
-    }
-  }, []);
+  // LEGACY REST API
+  // useEffect(() => {
+  //   // This check is needed to load records only once after user logged in or during page reload.
+  //   // In other cases when Records component is rendered it should use Context.
+  //   if (records === null) {
+  //     const authToken = localStorage.getItem('AuthToken');
+  //     axios.defaults.headers.common = {Authorization: `${authToken}`};
+  //     axios
+  //       .get(`${API_ROUTE}/records/`, {
+  //         params: {
+  //           start: loadFilters.start,
+  //           end: loadFilters.end
+  //         }
+  //       })
+  //       .then((response) => {
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //       });
+  //   }
+  // }, []);
 
   const { classes } = props;
   const Filters = (
@@ -94,7 +80,7 @@ const Records = (props) => {
         type="date"
         defaultValue={filters.start}
         margin="normal"
-        onChange={(event) => {setFilters({start: event.target.value, end: filters.end}, loadRecords)}}
+        onChange={(event) => {setFilters({...filters, start: event.target.value})}}
         InputLabelProps={{
           shrink: true,
         }}
@@ -105,7 +91,7 @@ const Records = (props) => {
         type="date"
         defaultValue={filters.end}
         margin="normal"
-        onChange={(event) => {setFilters({start: filters.start, end: event.target.value}, loadRecords)}}
+        onChange={(event) => {setFilters({...filters, end: event.target.value})}}
         InputLabelProps={{
           shrink: true,
         }}
@@ -113,7 +99,7 @@ const Records = (props) => {
     </form>
   );
 
-  if (records === null || uiLoading === true) {
+  if (records === null || loading) {
     return (
       <CircularProgress size={150} className={classes.uiProgress} />
     );
