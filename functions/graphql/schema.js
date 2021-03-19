@@ -1,6 +1,8 @@
 const {gql} = require('apollo-server-express');
 
 const typeDefs = gql`
+  scalar Date
+
   type User {
     id: ID!
     email: String!
@@ -25,7 +27,7 @@ const typeDefs = gql`
     sys: Int!
     dia: Int!
     pul: Int!
-    datetime: String!
+    datetime: Date!
   }
   
   type Mutation {
@@ -38,7 +40,7 @@ const typeDefs = gql`
   
   type Query {
     user: User
-    records(start: String, end: String): [Record]
+    records(start: Date, end: Date): [Record]
   }
 `;
 

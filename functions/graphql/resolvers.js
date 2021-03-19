@@ -1,5 +1,25 @@
 const {ValidationError, AuthenticationError} = require('apollo-server-express');
 const { db, firebase } = require('../util/firebase');
+const { GraphQLScalarType, Kind } = require('graphql');
+
+/* SCALARS */
+
+const dateScalar = new GraphQLScalarType({
+  name: 'Date',
+  description: 'Date custom scalar type',
+  serialize(value) {
+    return value.getTime(); // Convert outgoing Date to integer for JSON
+  },
+  parseValue(value) {
+    return new Date(value); // Convert incoming integer to Date
+  },
+  parseLiteral(ast) {
+    if (ast.kind === Kind.INT) {
+      return new Date(parseInt(ast.value, 10)); // Convert hard-coded AST string to integer and then to Date
+    }
+    return null; // Invalid hard-coded value (not an integer)
+  },
+});
 
 /* USERS */
 
@@ -81,10 +101,10 @@ async function records(parent, args, context, info) {
   try {
     let queryRef = db.collection('records').where('user', '==', context.uid);
     if (args.start) {
-      queryRef = queryRef.where('datetime', '>=', new Date(args.start));
+      queryRef = queryRef.where('datetime', '>=', args.start);
     }
     if (args.end) {
-      queryRef = queryRef.where('datetime', '<=', new Date (args.end));
+      queryRef = queryRef.where('datetime', '<=', args.end);
     }
     const data = await queryRef.orderBy('datetime', 'desc').get();
     const records = [];
@@ -158,6 +178,7 @@ async function deleteRecord(parent, args, context, info) {
 }
 
 const resolvers = {
+  Date: dateScalar,
   Mutation: {
     addRecord,
     deleteRecord,
