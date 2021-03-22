@@ -45,7 +45,7 @@ const SigninPage = (props) => {
     email: '',
     password: '',
   });
-  const {loading, signin, signinError: error} = useAuth();
+  const {loading, signin, signInError: error} = useAuth();
 
   const handleChange = (event) => {
     let newUserData = {...userData};
@@ -64,10 +64,12 @@ const SigninPage = (props) => {
     //   .catch((error) => {
     //   });
 
-    signin(userData.email, userData.password).then(() => {
-      props.history.push(HOME_ROUTE);
-    }).catch((e) => {
-      console.log(e);
+    signin(userData.email, userData.password).then((res) => {
+      // Full page reload is done here because context in util/graphql.js needs to be updated with received auth token
+      // before fetching user data
+      if (res) {
+        document.location.href = HOME_ROUTE;
+      }
     });
   };
 
@@ -97,7 +99,7 @@ const SigninPage = (props) => {
           autoComplete="email"
           autoFocus
           helperText={error && error.email}
-          error={error && error.email}
+          error={error && error.email ? true : false}
           onChange={handleChange}
         />
         <TextField
@@ -111,7 +113,7 @@ const SigninPage = (props) => {
           id="password"
           autoComplete="current-password"
           helperText={error && error.password}
-          error={error && error.password}
+          error={error && error.password ? true : false}
           onChange={handleChange}
         />
         <Button

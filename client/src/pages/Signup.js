@@ -10,8 +10,8 @@ import Container from '@material-ui/core/Container';
 import withStyles from '@material-ui/core/styles/withStyles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import axios from 'axios';
-import {HOME_ROUTE, API_ROUTE} from "../constants/routes";
+import {HOME_ROUTE, SIGNIN_ROUTE} from "../constants/routes";
+import {useAuth} from "../context/AuthContext";
 
 const styles = (theme) => ({
   container: {
@@ -41,8 +41,7 @@ const SignupPage = (props) => {
     password: '',
     confirmPassword: ''
   });
-  const [errors, setErrors] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const {signup, signUpError: error} = useAuth();
 
   const handleChange = (event) => {
     let newUserData = {...userData};
@@ -52,18 +51,24 @@ const SignupPage = (props) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setLoading(true);
-    axios
-      .post(`${API_ROUTE}/user/signup`, userData)
-      .then((response) => {
-        localStorage.setItem('AuthToken', `${response.data.token}`);
-        setLoading(false);
-        props.history.push(HOME_ROUTE);
-      })
-      .catch((error) => {
-        setErrors(error.response.data);
-        setLoading(false);
-      });
+    // LEGACY REST API
+    // axios
+    //   .post(`${API_ROUTE}/user/signup`, userData)
+    //   .then((response) => {
+    //     localStorage.setItem('AuthToken', `${response.data.token}`);
+    //     props.history.push(HOME_ROUTE);
+    //   })
+    //   .catch((error) => {
+    //     setLoading(false);
+    //   });
+
+    signup(userData.email, userData.password, userData.confirmPassword).then((res) => {
+      // Full page reload is done here because context in util/graphql.js needs to be updated with received auth token
+      // before fetching user data
+      if (res) {
+        document.location.href = HOME_ROUTE;
+      }
+    });
   };
 
   const {classes} = props;
@@ -85,8 +90,8 @@ const SignupPage = (props) => {
           label="Email Address"
           name="email"
           autoComplete="email"
-          helperText={errors.email}
-          error={errors.email ? true : false}
+          helperText={error && error.email}
+          error={error && error.email ? true : false}
           onChange={handleChange}
         />
         <TextField
@@ -99,8 +104,8 @@ const SignupPage = (props) => {
           type="password"
           id="password"
           autoComplete="current-password"
-          helperText={errors.password}
-          error={errors.password ? true : false}
+          helperText={error && error.password}
+          error={error && error.password ? true : false}
           onChange={handleChange}
         />
         <TextField
@@ -113,8 +118,8 @@ const SignupPage = (props) => {
           type="password"
           id="confirmPassword"
           autoComplete="current-password"
-          helperText={errors.confirmPassword}
-          error={errors.confirmPassword ? true : false}
+          helperText={error && error.confirmPassword}
+          error={error && error.confirmPassword ? true : false}
           onChange={handleChange}
         />
         <Button
@@ -124,16 +129,14 @@ const SignupPage = (props) => {
           color="primary"
           className={classes.submit}
           onClick={handleSubmit}
-          disabled={loading ||
-          !userData.email ||
-          !userData.password}
+          disabled={!userData.email || !userData.password}
         >
           Sign Up
-          {loading && <CircularProgress size={30} className={classes.progress} />}
+          {/*{loading && <CircularProgress size={30} className={classes.progress} />}*/}
         </Button>
       </form>
       <div>
-        <Link href="login" variant="body2">
+        <Link href={SIGNIN_ROUTE} variant="body2">
           Already have an account? Sign in
         </Link>
       </div>

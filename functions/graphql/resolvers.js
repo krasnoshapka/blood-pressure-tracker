@@ -1,4 +1,4 @@
-const {ValidationError, AuthenticationError} = require('apollo-server-express');
+const {UserInputError, AuthenticationError} = require('apollo-server-express');
 const { db, firebase } = require('../util/firebase');
 const { GraphQLScalarType, Kind } = require('graphql');
 
@@ -25,45 +25,46 @@ const dateScalar = new GraphQLScalarType({
 
 const { validateLoginData, validateSignUpData } = require('../util/validators');
 
-async function loginUser(parent, args, context, info) {
+async function signInUser(parent, args, context, info) {
   const { valid, errors } = validateLoginData(args);
-  if (!valid) throw new ValidationError(JSON.stringify(errors));
-
-  try {
-    const res = await firebase.auth().signInWithEmailAndPassword(args.email, args.password);
-    if (res.user) {
-      return res.user.getIdToken();
+  if (!valid) {
+    for (let key in errors) {
+      throw new UserInputError(errors[key], {
+        argumentName: key
+      });
     }
-  } catch (e) {
-    console.error(e);
-    throw new ValidationError(e.message);
+  }
+
+  const res = await firebase.auth().signInWithEmailAndPassword(args.email, args.password);
+  if (res.user) {
+    return res.user.getIdToken();
   }
 }
 
 async function signUpUser(parent, args, context, info) {
   const { valid, errors } = validateSignUpData(args);
-  if (!valid) throw new ValidationError(JSON.stringify(errors));
-
-
-  try {
-    // Check that user already exist
-    const check = await db.collection('users').where('email', '==', args.email).get();
-    if (check._size > 0) {
-      throw new ValidationError('this email is already registered');
-    } else {
-      const res = await firebase.auth().createUserWithEmailAndPassword(args.email, args.password);
-      if (res.user) {
-        // Create user in database
-        await db.doc(`/users/${res.user.uid}`).set({
-          email: args.email
-        });
-
-        return res.user.getIdToken();
-      }
+  if (!valid) {
+    for (let key in errors) {
+      throw new UserInputError(errors[key], {
+        argumentName: key
+      });
     }
-  } catch(e) {
-    console.error(e);
-    throw new ValidationError(e.message);
+  }
+
+  // Check that user already exist
+  const check = await db.collection('users').where('email', '==', args.email).get();
+  if (check._size > 0) {
+    throw new UserInputError('this email is already registered', {argumentName: 'email'});
+  } else {
+    const res = await firebase.auth().createUserWithEmailAndPassword(args.email, args.password);
+    if (res.user) {
+      // Create user in database
+      await db.doc(`/users/${res.user.uid}`).set({
+        email: args.email
+      });
+
+      return res.user.getIdToken();
+    }
   }
 }
 
@@ -128,15 +129,15 @@ async function records(parent, args, context, info) {
 async function addRecord(parent, args, context, info) {
   // Todo: implement better validation of args.
   if (args.sys <= 0) {
-    throw new ValidationError('Sys pressure must not be negative');
+    throw new UserInputError('Sys pressure must not be negative');
   }
 
   if (args.dia <= 0) {
-    throw new ValidationError('Dia pressure must not be negative');
+    throw new UserInputError('Dia pressure must not be negative');
   }
 
   if (args.pul <= 0) {
-    throw new ValidationError('Pulse must not be negative');
+    throw new UserInputError('Pulse must not be negative');
   }
 
   const newRecord = {
@@ -163,7 +164,7 @@ async function deleteRecord(parent, args, context, info) {
     const doc = await db.doc(`/records/${args.id}`).get();
 
     if (!doc.exists) {
-      throw new ValidationError('Record not found');
+      throw new UserInputError('Record not found');
     }
     if (doc.data().user !== context.uid) {
       throw new AuthenticationError('UnAuthorized');
@@ -182,7 +183,7 @@ const resolvers = {
   Mutation: {
     addRecord,
     deleteRecord,
-    loginUser,
+    signInUser,
     signUpUser
   },
   Query: {

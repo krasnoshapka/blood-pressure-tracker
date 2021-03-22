@@ -34,7 +34,7 @@ const typeDefs = gql`
     addRecord(sys: Int!, dia: Int!, pul: Int!): Record
     deleteRecord(id: ID!): String
     
-    loginUser(email: String!, password: String!): String
+    signInUser(email: String!, password: String!): String
     signUpUser(email: String!, password: String!, confirmPassword: String!): String
   }
   

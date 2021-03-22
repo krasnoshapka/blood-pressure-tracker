@@ -7,7 +7,7 @@ const { admin, db } = require('../util/firebase');
 async function authContext(req) {
   // Todo: Maybe there is a proper way to define that method doesn't require auth.
   const authExceptions = [
-    'loginUser',
+    'signInUser',
     'signUpUser'
   ];
   if (authExceptions.some((el) => req.body.query.includes(el))) {
