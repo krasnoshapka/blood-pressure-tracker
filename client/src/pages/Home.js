@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, {useState} from 'react';
 
 import AppBar from "@material-ui/core/AppBar";
 import BottomNavigation from '@material-ui/core/BottomNavigation';
@@ -14,7 +14,6 @@ import Settings from '../components/Settings';
 import Records from '../components/Records';
 import AddRecord from "../components/AddRecord";
 
-import {GlobalContext} from "../context/GlobalState";
 import {useAuth} from "../context/AuthContext";
 import {SIGNIN_ROUTE} from "../constants/routes";
 
@@ -44,7 +43,7 @@ const styles = (theme) => ({
 });
 
 const HomePage = (props) => {
-  const {page, setPage} = useContext(GlobalContext);
+  const [page, setPage] = useState('pressure');
   const {loading, logout, error: userError} = useAuth();
   // Redirect to signin page when token is expired or other error occurred.
   if (userError) {
@@ -76,6 +75,7 @@ const HomePage = (props) => {
   // }, []);
 
   const { classes } = props;
+  const childProps = { ...props, setPage };
 
   return (
     <>
@@ -86,10 +86,10 @@ const HomePage = (props) => {
           <div className={classes.content}>
             {(() => {
               switch (page) {
-                case 'pressure': return <RecordsProvider><Records /></RecordsProvider>;
-                case 'add': return <RecordsProvider><AddRecord /></RecordsProvider>;
-                case 'settings': return <Settings />;
-                default: return;
+                case 'pressure': return <RecordsProvider><Records {...childProps} /></RecordsProvider>;
+                case 'add': return <RecordsProvider><AddRecord {...childProps} /></RecordsProvider>;
+                case 'settings': return <Settings {...childProps} />;
+                default: return <>Page not found</>;
               }
             })()}
           </div>
