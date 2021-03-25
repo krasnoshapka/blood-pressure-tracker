@@ -1,13 +1,10 @@
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import SaveIcon from '@material-ui/icons/Save';
-
-import axios from 'axios';
-import { API_ROUTE } from "../constants/routes";
-import {GlobalContext} from "../context/GlobalState";
+import {useRecords} from "../context/RecordsContext";
 
 const styles = ((theme) => ({
     form: {
@@ -21,14 +18,13 @@ const styles = ((theme) => ({
   })
 );
 
-const AddRecord = (props) => {
-  const {setPage, addRecord} = useContext(GlobalContext);
+const AddRecord = ({classes, history, setPage}) => {
   const [record, setRecord] = useState({
     sys: '',
     dia: '',
     pul: ''
   });
-  const [errors, setErrors] = useState([]);
+  const {add, addRecordError: errors} = useRecords();
 
   const handleChange = (event) => {
     let newRecord = {...record};
@@ -37,29 +33,31 @@ const AddRecord = (props) => {
   };
 
   const handleSubmit = (event) => {
-    // authMiddleWare(props.history);
     event.preventDefault();
     const newRecord = {
-      sys: record.sys,
-      dia: record.dia,
-      pul: record.pul
+      sys: parseInt(record.sys),
+      dia: parseInt(record.dia),
+      pul: parseInt(record.pul)
     };
 
-    const authToken = localStorage.getItem('AuthToken');
-    axios.defaults.headers.common = { Authorization: `${authToken}` };
-    axios
-      .post(`${API_ROUTE}/records/`, newRecord)
-      .then((response) => {
-        addRecord(response.data);
-        setPage('pressure');
-      })
-      .catch((error) => {
-        setErrors(error.response.data);
-        console.log(error);
-      });
-  };
+    // LEGACY REST API
+    // const authToken = localStorage.getItem('AuthToken');
+    // axios.defaults.headers.common = { Authorization: `${authToken}` };
+    // axios
+    //   .post(`${API_ROUTE}/records/`, newRecord)
+    //   .then((response) => {
+    //     addRecord(response.data);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
 
-  const {classes} = props;
+    add(newRecord).then((res) => {
+      if (res) {
+        setPage('pressure');
+      }
+    });
+  };
 
   return (
     <form className={classes.form} noValidate>
@@ -75,9 +73,9 @@ const AddRecord = (props) => {
         label="Systolic"
         name="sys"
         autoComplete="Systolic"
-        helperText={errors.sys}
+        helperText={errors && errors.sys}
         value={record.sys}
-        error={errors.sys ? true : false}
+        error={errors && errors.sys ? true : false}
         onChange={handleChange}
       />
       <TextField
@@ -89,9 +87,9 @@ const AddRecord = (props) => {
         label="Diastolic"
         name="dia"
         autoComplete="Diastolic"
-        helperText={errors.dia}
+        helperText={errors && errors.dia}
         value={record.dia}
-        error={errors.dia ? true : false}
+        error={errors && errors.dia ? true : false}
         onChange={handleChange}
       />
       <TextField
@@ -103,9 +101,9 @@ const AddRecord = (props) => {
         label="Pulse"
         name="pul"
         autoComplete="Pulse"
-        helperText={errors.pul}
+        helperText={errors && errors.pul}
         value={record.pul}
-        error={errors.pul ? true : false}
+        error={errors && errors.pul ? true : false}
         onChange={handleChange}
       />
       <Button variant="contained" color="primary" size="large" onClick={handleSubmit} startIcon={<SaveIcon />} className={classes.submit}>Save</Button>
