@@ -22,6 +22,12 @@ const ADD_RECORD_MUTATION = gql`
   }
 `;
 
+const DELETE_RECORD_MUTATION = gql`
+  mutation deleteRecord($id: ID!) {
+    deleteRecord(id: $id) 
+  }
+`;
+
 let currentDate = new Date();
 currentDate.setMonth(currentDate.getMonth() - 1);
 
@@ -34,10 +40,11 @@ function RecordsProvider(props) {
     start: currentDate.toISOString().slice(0,10),
     end: (new Date()).toISOString().slice(0,10)
   });
-  const { loading, data, error, refetch } = useQuery(RECORDS_QUERY, {
+  const { loading: _loadingRecords, data, error: _recordsError, refetch } = useQuery(RECORDS_QUERY, {
     variables: {...filters}
   });
-  const [addRecord, {error: _addRecordError}] = useMutation(ADD_RECORD_MUTATION);
+  const [addRecord, {error: _addRecordError, loading: _loadingAdd}] = useMutation(ADD_RECORD_MUTATION);
+  const [deleteRecord, {error: _deleteRecordError, loading: _loadingDelete}] = useMutation(DELETE_RECORD_MUTATION);
 
   const add = async (record) => {
     try {
@@ -53,10 +60,27 @@ function RecordsProvider(props) {
     }
   }
 
+  const del = async (id) => {
+    try {
+      const res = await deleteRecord({ variables: { id } });
+      if (res && res.data && res.data.deleteRecord) {
+        await refetch();
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  const loading = _loadingRecords || _loadingAdd || _loadingDelete;
+  const errors = processErrors(_recordsError) ||
+    processErrors(_addRecordError) ||
+    processErrors(_deleteRecordError);
   return (
     <RecordsContext.Provider
-      value={{ loading, error, 'records': (data ? data.records : null), filters, setFilters,
-        add, addRecordError: processErrors(_addRecordError)}}
+      value={{ loading, errors, 'records': (data ? data.records : null), filters, setFilters, add, del }}
       {...props}
     />
   );

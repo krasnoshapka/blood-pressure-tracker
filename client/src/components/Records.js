@@ -33,7 +33,7 @@ const styles = ((theme) => ({
 );
 
 const Records = (props) => {
-  const {loading, records, filters, setFilters} = useRecords();
+  const {loading, records, filters, setFilters, del} = useRecords();
 
   const handleDelete = (id) => {
     // LEGACY REST API
@@ -47,6 +47,11 @@ const Records = (props) => {
     //   .catch((err) => {
     //     console.log(err);
     //   });
+    del(id).then((res) => {
+      if (res) {
+        // TODO: show some UI message
+      }
+    });
   }
 
   // LEGACY REST API

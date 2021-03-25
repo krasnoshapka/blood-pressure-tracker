@@ -24,7 +24,7 @@ const AddRecord = ({classes, history, setPage}) => {
     dia: '',
     pul: ''
   });
-  const {add, addRecordError: errors} = useRecords();
+  const {add, errors} = useRecords();
 
   const handleChange = (event) => {
     let newRecord = {...record};
