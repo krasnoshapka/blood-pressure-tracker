@@ -105,7 +105,9 @@ async function records(parent, args, context, info) {
       queryRef = queryRef.where('datetime', '>=', args.start);
     }
     if (args.end) {
-      queryRef = queryRef.where('datetime', '<=', args.end);
+      // Return all records for the whole end day
+      const end = new Date(args.end.setHours(23, 59, 59));
+      queryRef = queryRef.where('datetime', '<=', end);
     }
     const data = await queryRef.orderBy('datetime', 'desc').get();
     const records = [];
@@ -129,15 +131,15 @@ async function records(parent, args, context, info) {
 async function addRecord(parent, args, context, info) {
   // Todo: implement better validation of args.
   if (args.sys <= 0) {
-    throw new UserInputError('Sys pressure must not be negative');
+    throw new UserInputError('Sys pressure must not be negative', {argumentName: 'sys'});
   }
 
   if (args.dia <= 0) {
-    throw new UserInputError('Dia pressure must not be negative');
+    throw new UserInputError('Dia pressure must not be negative', {argumentName: 'dia'});
   }
 
   if (args.pul <= 0) {
-    throw new UserInputError('Pulse must not be negative');
+    throw new UserInputError('Pulse must not be negative', {argumentName: 'pul'});
   }
 
   const newRecord = {
