@@ -1,5 +1,6 @@
 import React, {useContext, createContext} from 'react';
 import { useQuery, useMutation, gql } from '@apollo/client';
+import {processErrors} from '../util/errors';
 
 const AUTH_TOKEN = 'AuthToken';
 
@@ -72,16 +73,6 @@ function AuthProvider(props) {
 
   const logout = () => {
     localStorage.removeItem(AUTH_TOKEN);
-  }
-
-  const processErrors = (_errors) => {
-    const res = _errors ? {} : null;
-    if (_errors && _errors.graphQLErrors) {
-      _errors.graphQLErrors.forEach((er) => {
-        res[er.extensions.argumentName ?? 'message'] = er.message;
-      });
-    }
-    return res;
   }
 
   return (
