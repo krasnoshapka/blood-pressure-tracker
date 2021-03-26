@@ -78,12 +78,52 @@ async function user(parent, args, context, info) {
   }
 }
 
+/* NOTIFICATIONS */
+
 async function notifications(parent, args, context, info) {
-  const doc = await db.doc(`/users/${parent.id}`).get();
-  if (doc.exists) {
-    const user = doc.data();
-    return user.notifications;
+  const uid = parent ? parent.id : context.uid;
+  const data = await db.collection('notifications').where('user', '==', uid).get();
+  const notifications = [];
+  data.forEach((doc) => {
+    notifications.push({
+      ...doc,
+      id: doc.id
+    });
+  });
+  return notifications;
+}
+
+async function addNotification(parent, args, context, info) {
+  const newNotification = {
+    user: context.uid,
+    mon: args.mon,
+    tue: args.tue,
+    wed: args.wed,
+    thu: args.thu,
+    fri: args.fri,
+    sat: args.sat,
+    sun: args.sun,
+    time: args.time
   }
+  const doc = await db.collection('notifications').add(newNotification);
+  if (doc.id) {
+    newNotification.id = doc.id;
+    return newNotification;
+  }
+}
+
+async function deleteNotification(parent, args, context, info) {
+  const doc = await db.doc(`/notifications/${args.id}`).get();
+
+  if (!doc.exists) {
+    throw new UserInputError('Notification not found');
+  }
+  if (doc.data().user !== context.uid) {
+    throw new AuthenticationError('UnAuthorized');
+  }
+
+  const res = await db.doc(`/notifications/${args.id}`).delete();
+  return true;
 }
 
 /* RECORDS */
@@ -161,11 +201,14 @@ const resolvers = {
     addRecord,
     deleteRecord,
     signInUser,
-    signUpUser
+    signUpUser,
+    addNotification,
+    deleteNotification
   },
   Query: {
     user,
-    records
+    records,
+    notifications
   },
   User: {
     notifications
