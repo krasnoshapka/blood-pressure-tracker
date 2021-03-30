@@ -2,7 +2,6 @@ import React from 'react';
 import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
-import {GlobalProvider} from "./context/GlobalState";
 import Header from "./components/Header";
 import SigninPage from './pages/Signin';
 import SignupPage from './pages/Signup';
@@ -22,26 +21,24 @@ const theme = createMuiTheme({
 });
 
 function App() {
-  const user = useUser();
+  const {user} = useUser();
   return (
     <MuiThemeProvider theme={theme}>
       <Header />
-      <GlobalProvider>
-        <BrowserRouter>
-          <Switch>
-            <Route path={ROOT_ROUTE} exact>
-              {user ?
-                <Redirect to={HOME_ROUTE} />
-                :
-                <Redirect to={SIGNIN_ROUTE} />
-              }
-            </Route>
-            <Route path={HOME_ROUTE} exact component={HomePage} />
-            <Route path={SIGNIN_ROUTE} exact component={SigninPage} />
-            <Route path={SIGNUP_ROUTE} exact component={SignupPage} />
-          </Switch>
-        </BrowserRouter>
-      </GlobalProvider>
+      <BrowserRouter>
+        <Switch>
+          <Route path={ROOT_ROUTE} exact>
+            {user ?
+              <Redirect to={HOME_ROUTE} />
+              :
+              <Redirect to={SIGNIN_ROUTE} />
+            }
+          </Route>
+          <Route path={HOME_ROUTE} exact component={HomePage} />
+          <Route path={SIGNIN_ROUTE} exact component={SigninPage} />
+          <Route path={SIGNUP_ROUTE} exact component={SignupPage} />
+        </Switch>
+      </BrowserRouter>
     </MuiThemeProvider>
   );
 }
