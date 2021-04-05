@@ -1,5 +1,5 @@
 import React, {useContext, createContext} from 'react';
-import { useQuery, useMutation, gql } from '@apollo/client';
+import { useMutation, gql } from '@apollo/client';
 import {processErrors} from '../util/errors';
 
 const AUTH_TOKEN = 'AuthToken';
