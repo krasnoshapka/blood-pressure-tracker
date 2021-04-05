@@ -1,17 +1,56 @@
-import React, {useContext} from "react";
-import {GlobalContext} from "../context/GlobalState";
-import {TextField} from "@material-ui/core";
+import React, {useState} from "react";
+import {Button, TextField} from "@material-ui/core";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import withStyles from "@material-ui/core/styles/withStyles";
 
-const SettingsBasic = (props) => {
-  const {settings, setSettings} = useContext(GlobalContext);
+import {useUser} from "../context/UserContext";
+
+const styles = (theme) => ({
+  submit: {
+    marginTop: theme.spacing(3),
+  },
+  uiProgress: {
+    position: 'absolute',
+    zIndex: '1000',
+    top: 'calc(50% - 75px)',
+    left: 'calc(50% - 75px)'
+  },
+});
+
+const SettingsBasic = ({classes}) => {
+  const {loading, user} = useUser();
+  const [settings, setSettings] = useState({
+    email: user.email
+  });
 
   const handleChange = (event) => {
-    const newSettings = {...settings};
+    let newSettings = {...settings};
     newSettings[event.target.name] = event.target.value;
     setSettings(newSettings);
   };
 
-  return (
+  const updateSettings = (event) => {
+    event.preventDefault();
+    const formRequest = {
+      email: user.email,
+    };
+    // LEGACY REST API
+    // axios
+    //   .post(`${API_ROUTE}/user/user`, formRequest)
+    //   .then(() => {
+    //     setPage('pressure');
+    //   })
+    //   .catch((error) => {
+    //     if (error.response.status === 403) {
+    //       props.history.push(`${HOME_ROUTE}/login`);
+    //     }
+    //     console.log(error);
+    //   });
+  };
+
+  return (!user ?
+    <CircularProgress size={150} className={classes.uiProgress} />
+    :
     <React.Fragment>
       <TextField
         fullWidth
@@ -23,8 +62,20 @@ const SettingsBasic = (props) => {
         value={settings.email}
         onChange={handleChange}
       />
+
+      <Button
+        color="primary"
+        variant="contained"
+        type="submit"
+        className={classes.submit}
+        onClick={updateSettings}
+        disabled={loading || !user.email}
+      >
+        Save details
+        {loading && <CircularProgress size={30} className={classes.uiProgress} />}
+      </Button>
     </React.Fragment>
   );
 }
 
-export default SettingsBasic;
+export default withStyles(styles)(SettingsBasic);
