@@ -45,7 +45,7 @@ const SigninPage = (props) => {
     email: '',
     password: '',
   });
-  const {loading, signin, signInError: error} = useAuth();
+  const {loading, error, signin} = useAuth();
 
   const handleChange = (event) => {
     let newUserData = {...userData};

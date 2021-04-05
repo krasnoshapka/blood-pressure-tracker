@@ -18,6 +18,7 @@ import {useAuth} from "../context/AuthContext";
 import {SIGNIN_ROUTE} from "../constants/routes";
 
 import {RecordsProvider} from "../context/RecordsContext";
+import {useUser} from "../context/UserContext";
 
 const styles = (theme) => ({
   root: {
@@ -44,7 +45,8 @@ const styles = (theme) => ({
 
 const HomePage = (props) => {
   const [page, setPage] = useState('pressure');
-  const {loading, logout, error: userError} = useAuth();
+  const {logout} = useAuth();
+  const {loading, error: userError} = useUser();
   // Redirect to signin page when token is expired or other error occurred.
   if (userError) {
     props.history.push(SIGNIN_ROUTE);

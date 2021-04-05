@@ -41,7 +41,7 @@ const SignupPage = (props) => {
     password: '',
     confirmPassword: ''
   });
-  const {signup, signUpError: error} = useAuth();
+  const {loading, error, signup} = useAuth();
 
   const handleChange = (event) => {
     let newUserData = {...userData};
@@ -132,7 +132,7 @@ const SignupPage = (props) => {
           disabled={!userData.email || !userData.password}
         >
           Sign Up
-          {/*{loading && <CircularProgress size={30} className={classes.progress} />}*/}
+          {loading && <CircularProgress size={30} className={classes.progress} />}
         </Button>
       </form>
       <div>

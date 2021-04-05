@@ -4,25 +4,6 @@ import {processErrors} from '../util/errors';
 
 const AUTH_TOKEN = 'AuthToken';
 
-const USER_QUERY = gql`
-  {
-    user {
-      email
-      notifications {
-        id
-        mon
-        tue
-        wed
-        thu
-        fri
-        sat
-        sun
-        time
-      }
-    } 
-  }
-`
-
 const SIGNIN_USER_MUTATION = gql`
   mutation signInUser($email:String!, $password: String!) {
     signInUser(email: $email, password:$password) 
@@ -38,9 +19,8 @@ const SIGNUP_USER_MUTATION = gql`
 const AuthContext = createContext({});
 
 function AuthProvider(props) {
-  const { loading, data, refetch, error } = useQuery(USER_QUERY);
-  const [signInUser, {error: _signInError}] = useMutation(SIGNIN_USER_MUTATION);
-  const [signUpUser, {error: _signUpError}] = useMutation(SIGNUP_USER_MUTATION);
+  const [signInUser, {error: _signInError, loading: _signInLoading}] = useMutation(SIGNIN_USER_MUTATION);
+  const [signUpUser, {error: _signUpError, loading: _signUpLoading}] = useMutation(SIGNUP_USER_MUTATION);
 
   const signin = async (email, password) => {
     try {
@@ -77,8 +57,8 @@ function AuthProvider(props) {
 
   return (
     <AuthContext.Provider
-      value={{ loading, error, data, signin, logout, signup,
-        signInError: processErrors(_signInError), signUpError: processErrors(_signUpError) }}
+      value={{ signin, logout, signup, loading: _signInLoading || _signUpLoading,
+        error: processErrors(_signInError) || processErrors(_signUpError) }}
       {...props}
     />
   );
