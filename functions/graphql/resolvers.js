@@ -86,7 +86,15 @@ async function notifications(parent, args, context, info) {
   const notifications = [];
   data.forEach((doc) => {
     notifications.push({
-      ...doc,
+      user: doc.data().user,
+      mon: doc.data().mon,
+      tue: doc.data().tue,
+      wed: doc.data().wed,
+      thu: doc.data().thu,
+      fri: doc.data().fri,
+      sat: doc.data().sat,
+      sun: doc.data().sun,
+      time: doc.data().time,
       id: doc.id
     });
   });
