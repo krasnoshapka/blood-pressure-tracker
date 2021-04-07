@@ -34,6 +34,7 @@ const SettingsBasic = ({classes}) => {
     const formRequest = {
       email: user.email,
     };
+    // TODO: update settings when there will be some settings
   }
 
   return (!user ?

@@ -16,8 +16,8 @@ const SettingsNotifications = ({classes}) => {
   const {user, startNotification} = useUser();
   const [add, setAdd] = useState(false);
 
-  function handleAdd() {
-    if (startNotification()) {
+  async function handleAdd() {
+    if (await startNotification()) {
       setAdd(true);
     }
   }

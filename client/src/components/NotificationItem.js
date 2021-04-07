@@ -44,14 +44,14 @@ const NotificationItem = ({add, setAdd, notification, classes}) => {
     setItem(newItem);
   }
 
-  function handleSave() {
-    if (addNotification(item)) {
+  async function handleSave() {
+    if (await addNotification(item)) {
       setAdd(false);
     }
   }
 
-  function handleDelete() {
-    deleteNotification(item.id);
+  async function handleDelete() {
+    await deleteNotification(item.id);
   }
 
   return (
