@@ -36,45 +36,12 @@ const Records = (props) => {
   const {loading, records, filters, setFilters, del} = useRecords();
 
   function handleDelete(id) {
-    // LEGACY REST API
-    // const authToken = localStorage.getItem('AuthToken');
-    // axios.defaults.headers.common = { Authorization: `${authToken}` };
-    // axios
-    //   .delete(`${API_ROUTE}/records/${id}`)
-    //   .then(() => {
-    //     deleteRecord(id);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
     del(id).then((res) => {
       if (res) {
         // TODO: show some UI message
       }
     });
   }
-
-  // LEGACY REST API
-  // useEffect(() => {
-  //   // This check is needed to load records only once after user logged in or during page reload.
-  //   // In other cases when Records component is rendered it should use Context.
-  //   if (records === null) {
-  //     const authToken = localStorage.getItem('AuthToken');
-  //     axios.defaults.headers.common = {Authorization: `${authToken}`};
-  //     axios
-  //       .get(`${API_ROUTE}/records/`, {
-  //         params: {
-  //           start: loadFilters.start,
-  //           end: loadFilters.end
-  //         }
-  //       })
-  //       .then((response) => {
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //       });
-  //   }
-  // }, []);
 
   const { classes } = props;
   const Filters = (

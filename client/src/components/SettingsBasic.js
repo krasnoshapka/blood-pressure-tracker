@@ -34,18 +34,6 @@ const SettingsBasic = ({classes}) => {
     const formRequest = {
       email: user.email,
     };
-    // LEGACY REST API
-    // axios
-    //   .post(`${API_ROUTE}/user/user`, formRequest)
-    //   .then(() => {
-    //     setPage('pressure');
-    //   })
-    //   .catch((error) => {
-    //     if (error.response.status === 403) {
-    //       props.history.push(`${HOME_ROUTE}/login`);
-    //     }
-    //     console.log(error);
-    //   });
   }
 
   return (!user ?

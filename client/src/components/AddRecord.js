@@ -40,18 +40,6 @@ const AddRecord = ({classes, history, setPage}) => {
       pul: parseInt(record.pul)
     };
 
-    // LEGACY REST API
-    // const authToken = localStorage.getItem('AuthToken');
-    // axios.defaults.headers.common = { Authorization: `${authToken}` };
-    // axios
-    //   .post(`${API_ROUTE}/records/`, newRecord)
-    //   .then((response) => {
-    //     addRecord(response.data);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
-
     add(newRecord).then((res) => {
       if (res) {
         setPage('pressure');

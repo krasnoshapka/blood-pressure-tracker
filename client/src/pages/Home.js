@@ -60,22 +60,6 @@ const HomePage = (props) => {
     setPage(newPage);
   }
 
-  // LEGACY REST API
-  // useEffect(() => {
-  //   const authToken = localStorage.getItem('AuthToken');
-  //   axios.defaults.headers.common = { Authorization: `${authToken}` };
-  //   axios
-  //     .get(`${API_ROUTE}/user/`)
-  //     .then((response) => {
-  //     })
-  //     .catch((error) => {
-  //       if (error.response.status === 403) {
-  //         props.history.push(`${HOME_ROUTE}/login`)
-  //       }
-  //       console.log(error);
-  //     });
-  // }, []);
-
   const { classes } = props;
   // TODO: Fix errors in console due to passing missing props
   // Material-UI: The key `root` provided to the classes prop is not implemented in Records.

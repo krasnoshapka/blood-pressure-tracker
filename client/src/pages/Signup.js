@@ -51,16 +51,6 @@ const SignupPage = (props) => {
 
   function handleSubmit(event) {
     event.preventDefault();
-    // LEGACY REST API
-    // axios
-    //   .post(`${API_ROUTE}/user/signup`, userData)
-    //   .then((response) => {
-    //     localStorage.setItem('AuthToken', `${response.data.token}`);
-    //     props.history.push(HOME_ROUTE);
-    //   })
-    //   .catch((error) => {
-    //     setLoading(false);
-    //   });
 
     signup(userData.email, userData.password, userData.confirmPassword).then((res) => {
       // Full page reload is done here because context in util/graphql.js needs to be updated with received auth token

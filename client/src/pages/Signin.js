@@ -55,14 +55,6 @@ const SigninPage = (props) => {
 
   function handleSubmit(event) {
     event.preventDefault();
-    // LEGACY REST API
-    // axios
-    //   .post(`${API_ROUTE}/user/login`, userData)
-    //   .then((response) => {
-    //     localStorage.setItem('AuthToken', `Bearer ${response.data.token}`);
-    //   })
-    //   .catch((error) => {
-    //   });
 
     signin(userData.email, userData.password).then((res) => {
       // Full page reload is done here because context in util/graphql.js needs to be updated with received auth token
