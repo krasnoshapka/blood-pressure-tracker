@@ -58,7 +58,7 @@ const NotificationItem = ({add, setAdd, notification, classes}) => {
     <FormControl component="fieldset" className={classes.formControl}>
       <FormLabel component="legend">Select day(s) and time</FormLabel>
       <FormGroup>
-        <Grid container justify="space-around" justify="flex-start" wrap="wrap">
+        <Grid container justify="space-around" wrap="wrap">
           { weekDays.map(({name, title}) => (
             <FormControlLabel
               key={`${item.id}-${name}`}
