@@ -26,13 +26,13 @@ const AddRecord = ({classes, history, setPage}) => {
   });
   const {add, errors} = useRecords();
 
-  const handleChange = (event) => {
+  function handleChange(event) {
     let newRecord = {...record};
     newRecord[event.target.name] = event.target.value;
     setRecord(newRecord);
-  };
+  }
 
-  const handleSubmit = (event) => {
+  function handleSubmit(event) {
     event.preventDefault();
     const newRecord = {
       sys: parseInt(record.sys),
@@ -57,7 +57,7 @@ const AddRecord = ({classes, history, setPage}) => {
         setPage('pressure');
       }
     });
-  };
+  }
 
   return (
     <form className={classes.form} noValidate>

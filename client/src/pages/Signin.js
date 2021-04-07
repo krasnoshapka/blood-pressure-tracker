@@ -47,13 +47,13 @@ const SigninPage = (props) => {
   });
   const {loading, error, signin} = useAuth();
 
-  const handleChange = (event) => {
+  function handleChange(event) {
     let newUserData = {...userData};
     newUserData[event.target.name] = event.target.value;
     setUserData(newUserData);
-  };
+  }
 
-  const handleSubmit = (event) => {
+  function handleSubmit(event) {
     event.preventDefault();
     // LEGACY REST API
     // axios
@@ -71,7 +71,7 @@ const SigninPage = (props) => {
         document.location.href = HOME_ROUTE;
       }
     });
-  };
+  }
 
   const { classes } = props;
   return (

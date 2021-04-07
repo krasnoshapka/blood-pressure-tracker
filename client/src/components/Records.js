@@ -35,7 +35,7 @@ const styles = ((theme) => ({
 const Records = (props) => {
   const {loading, records, filters, setFilters, del} = useRecords();
 
-  const handleDelete = (id) => {
+  function handleDelete(id) {
     // LEGACY REST API
     // const authToken = localStorage.getItem('AuthToken');
     // axios.defaults.headers.common = { Authorization: `${authToken}` };

@@ -23,13 +23,13 @@ const SettingsBasic = ({classes}) => {
     email: user.email
   });
 
-  const handleChange = (event) => {
+  function handleChange(event) {
     let newSettings = {...settings};
     newSettings[event.target.name] = event.target.value;
     setSettings(newSettings);
-  };
+  }
 
-  const updateSettings = (event) => {
+  function updateSettings(event) {
     event.preventDefault();
     const formRequest = {
       email: user.email,
@@ -46,7 +46,7 @@ const SettingsBasic = ({classes}) => {
     //     }
     //     console.log(error);
     //   });
-  };
+  }
 
   return (!user ?
     <CircularProgress size={150} className={classes.uiProgress} />
