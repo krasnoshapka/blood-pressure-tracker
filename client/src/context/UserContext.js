@@ -1,6 +1,7 @@
 import React, { createContext, useContext } from "react";
 import {gql, useMutation, useQuery} from "@apollo/client";
 import messaging from "../util/firebase";
+import {processErrors} from "../util/errors";
 
 const USER_QUERY = gql`
   {
@@ -100,7 +101,8 @@ const UserProvider = props => {
     }
   }
 
-  const error = _userError || _addNotificationError || _deleteNotificationError;
+  const error = processErrors(_userError) || processErrors(_addNotificationError) ||
+    processErrors(_deleteNotificationError);
   return <UserContext.Provider value={{loading, error, user, startNotification,
     addNotification: _addNotification, deleteNotification: _deleteNotification}} {...props} />;
 }
