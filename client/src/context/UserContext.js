@@ -51,7 +51,7 @@ const UserContext = createContext({
 });
 
 const UserProvider = props => {
-  const { loading, data, refetch, error } = useQuery(USER_QUERY);
+  const { loading, data, refetch, error: _userError } = useQuery(USER_QUERY);
   const user = data ? data.user : null;
   const [addNotification, {error: _addNotificationError}] = useMutation(ADD_NOTIFICATION_MUTATION);
   const [deleteNotification, {error: _deleteNotificationError}] = useMutation(DELETE_NOTIFICATION_MUTATION);
@@ -100,6 +100,7 @@ const UserProvider = props => {
     }
   }
 
+  const error = _userError || _addNotificationError || _deleteNotificationError;
   return <UserContext.Provider value={{loading, error, user, startNotification,
     addNotification: _addNotification, deleteNotification: _deleteNotification}} {...props} />;
 }
