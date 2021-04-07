@@ -2,6 +2,8 @@ import React, {useContext, createContext, useState} from 'react';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import {processErrors} from '../util/errors';
 
+const FILTERS_KEY = 'Filters';
+
 const RECORDS_QUERY = gql`
   query ($start: Date, $end: Date) {
     records(start: $start, end: $end) {
@@ -30,21 +32,28 @@ const DELETE_RECORD_MUTATION = gql`
 
 let currentDate = new Date();
 currentDate.setMonth(currentDate.getMonth() - 1);
+const defaultFilters = {
+  start: currentDate.toISOString().slice(0,10),
+  end: (new Date()).toISOString().slice(0,10)
+};
 
 const RecordsContext = createContext({
   records: null
 });
 
 function RecordsProvider(props) {
-  const [filters, setFilters] = useState({
-    start: currentDate.toISOString().slice(0,10),
-    end: (new Date()).toISOString().slice(0,10)
-  });
+  const [filters, setFilters] = useState( localStorage.getItem(FILTERS_KEY) ?
+    JSON.parse(localStorage.getItem(FILTERS_KEY)) : defaultFilters);
   const { loading: _loadingRecords, data, error: _recordsError, refetch } = useQuery(RECORDS_QUERY, {
     variables: {...filters}
   });
   const [addRecord, {error: _addRecordError, loading: _loadingAdd}] = useMutation(ADD_RECORD_MUTATION);
   const [deleteRecord, {error: _deleteRecordError, loading: _loadingDelete}] = useMutation(DELETE_RECORD_MUTATION);
+
+  const _setFilters = (f) => {
+    localStorage.setItem(FILTERS_KEY, JSON.stringify(f));
+    setFilters(f);
+  }
 
   const add = async (record) => {
     try {
@@ -80,7 +89,7 @@ function RecordsProvider(props) {
     processErrors(_deleteRecordError);
   return (
     <RecordsContext.Provider
-      value={{ loading, errors, 'records': (data ? data.records : null), filters, setFilters, add, del }}
+      value={{ loading, errors, 'records': (data ? data.records : null), filters, setFilters: _setFilters, add, del }}
       {...props}
     />
   );
