@@ -1,10 +1,13 @@
-import React, {useContext} from "react";
+import React, {useState} from "react";
 import withStyles from "@material-ui/core/styles/withStyles";
 import {Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, TextField} from "@material-ui/core";
-import {weekDays} from "../constants/notification";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from '@material-ui/icons/Delete';
-import {GlobalContext} from "../context/GlobalState";
+import SaveIcon from "@material-ui/icons/Add";
+import Button from "@material-ui/core/Button";
+import {weekDays} from "../constants/notification";
+import {useUser} from "../context/UserContext";
+import {defaultNotification} from "../constants/notification";
 
 const styles = (theme) => ({
   formControl: {
@@ -18,42 +21,38 @@ const styles = (theme) => ({
     marginRight: theme.spacing(1),
     width: 200,
   },
+  button: {
+    margin: theme.spacing(1)
+  },
   delete: {
     alignSelf: 'flex-end',
     flex: '0 0 30px'
   }
 });
 
-const NotificationItem = ({notification, classes}) => {
-  const {settings, setSettings} = useContext(GlobalContext);
+const NotificationItem = ({add, setAdd, notification, classes}) => {
+  const {addNotification, deleteNotification} = useUser();
+  const [item, setItem] = useState(add ? defaultNotification : notification);
 
-  const handleChange = (event) => {
-    let newNotifications = settings.notifications.map((n) => {
-      if (n.id !== notification.id) {
-        return n;
-      }
-      if (event.target.name === "time") {
-        n[event.target.name] = event.target.value;
-      } else {
-        n[event.target.name] = event.target.checked;
-      }
-      return n;
-    });
+  function handleChange(event) {
+    const newItem = {...item};
+    if (event.target.name === "time") {
+      newItem[event.target.name] = event.target.value;
+    } else {
+      newItem[event.target.name] = event.target.checked;
+    }
+    setItem(newItem);
+  }
 
-    setSettings({...settings,
-      notifications: newNotifications
-    });
-  };
+  function handleSave() {
+    if (addNotification(item)) {
+      setAdd(false);
+    }
+  }
 
-  const handleDelete = (event) => {
-    let newNotifications = settings.notifications.filter((n) =>
-      n.id !== notification.id
-    );
-
-    setSettings({...settings,
-      notifications: newNotifications
-    });
-  };
+  function handleDelete() {
+    deleteNotification(item.id);
+  }
 
   return (
     <FormControl component="fieldset" className={classes.formControl}>
@@ -62,8 +61,8 @@ const NotificationItem = ({notification, classes}) => {
         <Grid container justify="space-around" justify="flex-start" wrap="wrap">
           { weekDays.map(({name, title}) => (
             <FormControlLabel
-              key={`${notification.id}-${name}`}
-              control={<Checkbox checked={notification[name]} onChange={handleChange} name={name} />}
+              key={`${item.id}-${name}`}
+              control={<Checkbox checked={item[name]} onChange={handleChange} name={name} />}
               label={title}
               className={classes.weekday}
             />
@@ -74,7 +73,8 @@ const NotificationItem = ({notification, classes}) => {
         id="time"
         label="Time"
         type="time"
-        defaultValue="07:30"
+        name="time"
+        defaultValue={item.time}
         className={classes.timeField}
         onChange={handleChange}
         InputLabelProps={{
@@ -84,15 +84,29 @@ const NotificationItem = ({notification, classes}) => {
           step: 300, // 5 min
         }}
       />
-      <IconButton
-        aria-label="delete"
-        size="small"
-        variant="contained"
-        className={classes.delete}
-        color="primary"
-        onClick={handleDelete}>
-        <DeleteIcon />
-      </IconButton>
+      {add && (
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          className={classes.button}
+          startIcon={<SaveIcon />}
+          onClick={handleSave}
+        >
+          Save notification
+        </Button>
+      )}
+      {item.id && (
+        <IconButton
+          aria-label="delete"
+          size="small"
+          variant="contained"
+          className={classes.delete}
+          color="primary"
+          onClick={handleDelete}>
+          <DeleteIcon />
+        </IconButton>
+      )}
     </FormControl>
   );
 }

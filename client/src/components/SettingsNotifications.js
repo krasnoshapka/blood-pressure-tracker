@@ -1,12 +1,10 @@
-import React, {useContext} from "react";
-import {GlobalContext} from "../context/GlobalState";
+import React, {useState} from "react";
 import Button from '@material-ui/core/Button';
 import AddIcon from "@material-ui/icons/Add";
-import {defaultNotification} from "../constants/notification";
-import NotificationItem from "./NotificationItem";
 import withStyles from "@material-ui/core/styles/withStyles";
-import messaging from "../util/firebase";
 import Typography from "@material-ui/core/Typography";
+import NotificationItem from "./NotificationItem";
+import {useUser} from "../context/UserContext";
 
 const styles = (theme) => ({
   button: {
@@ -14,56 +12,41 @@ const styles = (theme) => ({
   },
 });
 
-const SettingsNotifications = (props) => {
-  const {settings, setSettings} = useContext(GlobalContext);
+const SettingsNotifications = ({classes}) => {
+  const {user, startNotification} = useUser();
+  const [add, setAdd] = useState(false);
 
-  const handleAddNotification = (event) => {
-    const notifications = settings.notifications;
-
-    messaging.requestPermission()
-      .then(() => {
-        return messaging.getToken();
-      })
-      .then((notificationsToken) => {
-        notifications.push({
-          ...defaultNotification,
-          id: new Date()
-        });
-        setSettings({
-          ...settings,
-          notifications,
-          notificationsToken
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  function handleAdd() {
+    if (startNotification()) {
+      setAdd(true);
+    }
   }
-
-  const { classes, ...rest } = props;
 
   return (
     <React.Fragment>
-      <Button
-        variant="contained"
-        color="primary"
-        size="small"
-        className={classes.button}
-        startIcon={<AddIcon />}
-        onClick={handleAddNotification}
-      >
-        Add notification
-      </Button>
+      {add ?
+        <NotificationItem add setAdd={setAdd} />
+      :
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          className={classes.button}
+          startIcon={<AddIcon />}
+          onClick={handleAdd}
+        >
+          Add notification
+        </Button>
+      }
 
       <div>
-        {!settings.notifications.length ? (
+        {!user.notifications.length ?
           <Typography paragraph>
             You don't have any notifications yet. Use Add button to create one.
           </Typography>
-        ) : settings.notifications.map((notification) =>
-          (
+        :
+          user.notifications.map((notification) =>
             <NotificationItem key={notification.id} notification={notification} />
-          )
         )}
       </div>
     </React.Fragment>
