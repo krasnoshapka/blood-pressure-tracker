@@ -3,8 +3,7 @@ import { setContext } from '@apollo/client/link/context';
 import {AUTH_TOKEN} from "../context/AuthContext";
 
 const httpLink = createHttpLink({
-  // uri: 'http://localhost:5001/blood-pressure-tracker-77c8c/us-central1/graphql',
-  uri: '/graphql'
+  uri: process.env.REACT_APP_GRAPHQL_API
 });
 
 const authLink = setContext((_, { headers }) => {
