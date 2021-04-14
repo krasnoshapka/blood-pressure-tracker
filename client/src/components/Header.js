@@ -10,8 +10,7 @@ const styles = (theme) => ({
   }
 });
 
-const Header = (props) => {
-  const {classes} = props;
+const Header = ({classes}) => {
   return (
     <AppBar position="fixed" className={classes.topBar}>
       <Toolbar>

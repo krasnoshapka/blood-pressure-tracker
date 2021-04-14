@@ -32,7 +32,7 @@ const styles = ((theme) => ({
   })
 );
 
-const Records = (props) => {
+const Records = ({ classes }) => {
   const {loading, records, filters, setFilters, del} = useRecords();
 
   function handleDelete(id) {
@@ -43,7 +43,6 @@ const Records = (props) => {
     });
   }
 
-  const { classes } = props;
   const Filters = (
     <form className={classes.filters} noValidate>
       <TextField

@@ -40,7 +40,7 @@ const styles = (theme) => ({
   }
 });
 
-const SigninPage = (props) => {
+const SigninPage = ({ classes }) => {
   const [userData, setUserData] = useState({
     email: '',
     password: '',
@@ -65,7 +65,6 @@ const SigninPage = (props) => {
     });
   }
 
-  const { classes } = props;
   return (
     <Container component="main" maxWidth="xs" className={classes.container}>
       <Avatar className={classes.avatar}>
