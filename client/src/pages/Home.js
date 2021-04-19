@@ -61,9 +61,7 @@ const HomePage = (props) => {
   }
 
   const { classes } = props;
-  // TODO: Fix errors in console due to passing missing props
-  // Material-UI: The key `root` provided to the classes prop is not implemented in Records.
-  const childProps = { ...props, setPage };
+  const childProps = { history: props.history, setPage };
 
   return (
     <>
