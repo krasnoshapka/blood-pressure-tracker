@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React from 'react';
+import {useFormik} from "formik";
 import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -19,33 +20,39 @@ const styles = ((theme) => ({
 );
 
 const AddRecord = ({classes, history, setPage}) => {
-  const [record, setRecord] = useState({
-    sys: '',
-    dia: '',
-    pul: ''
-  });
-  const {add, errors} = useRecords();
+  const {add, errors: serverErrors} = useRecords();
+  const {getFieldProps, handleSubmit, errors: clientErrors} = useFormik({
+    initialValues: {
+      sys: '',
+      dia: '',
+      pul: ''
+    },
+    validate(values) {
+      const errors = {};
 
-  function handleChange(event) {
-    let newRecord = {...record};
-    newRecord[event.target.name] = event.target.value;
-    setRecord(newRecord);
-  }
-
-  function handleSubmit(event) {
-    event.preventDefault();
-    const newRecord = {
-      sys: parseInt(record.sys),
-      dia: parseInt(record.dia),
-      pul: parseInt(record.pul)
-    };
-
-    add(newRecord).then((res) => {
-      if (res) {
-        setPage('pressure');
+      for (let key in values) {
+        if (!values[key]) {
+          errors[key] = 'Required';
+        } else if (values[key] < 40 || values[key] > 255) {
+          errors[key] = 'Must be between 40 and 250';
+        }
       }
-    });
-  }
+
+      return errors;
+    },
+    onSubmit(values) {
+      add({
+        sys: parseInt(values.sys),
+        dia: parseInt(values.dia),
+        pul: parseInt(values.pul)
+      }).then((res) => {
+        if (res) {
+          setPage('pressure');
+        }
+      });
+    }
+  });
+  const errors = clientErrors || serverErrors;
 
   return (
     <form className={classes.form} noValidate>
@@ -55,6 +62,7 @@ const AddRecord = ({classes, history, setPage}) => {
       <TextField
         variant="outlined"
         required
+        type="number"
         fullWidth
         margin="normal"
         id="sys"
@@ -62,13 +70,13 @@ const AddRecord = ({classes, history, setPage}) => {
         name="sys"
         autoComplete="Systolic"
         helperText={errors && errors.sys}
-        value={record.sys}
-        error={errors && errors.sys ? true : false}
-        onChange={handleChange}
+        {...getFieldProps("sys")}
+        error={errors && errors.sys}
       />
       <TextField
         variant="outlined"
         required
+        type="number"
         fullWidth
         margin="normal"
         id="dia"
@@ -76,13 +84,13 @@ const AddRecord = ({classes, history, setPage}) => {
         name="dia"
         autoComplete="Diastolic"
         helperText={errors && errors.dia}
-        value={record.dia}
-        error={errors && errors.dia ? true : false}
-        onChange={handleChange}
+        {...getFieldProps("dia")}
+        error={errors && errors.dia}
       />
       <TextField
         variant="outlined"
         required
+        type="number"
         fullWidth
         margin="normal"
         id="pul"
@@ -90,11 +98,11 @@ const AddRecord = ({classes, history, setPage}) => {
         name="pul"
         autoComplete="Pulse"
         helperText={errors && errors.pul}
-        value={record.pul}
-        error={errors && errors.pul ? true : false}
-        onChange={handleChange}
+        {...getFieldProps("pul")}
+        error={errors && errors.pul}
       />
-      <Button variant="contained" color="primary" size="large" onClick={handleSubmit} startIcon={<SaveIcon />} className={classes.submit}>Save</Button>
+      <Button variant="contained" color="primary" size="large" onClick={handleSubmit}
+        startIcon={<SaveIcon />} className={classes.submit}>Save</Button>
     </form>
   )
 }
