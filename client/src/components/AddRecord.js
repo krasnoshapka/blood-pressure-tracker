@@ -52,7 +52,7 @@ const AddRecord = ({classes, history, setPage}) => {
       });
     }
   });
-  const errors = clientErrors || serverErrors;
+  const errors = Object.keys(clientErrors).length > 0 ? clientErrors : serverErrors;
 
   return (
     <form className={classes.form} noValidate>

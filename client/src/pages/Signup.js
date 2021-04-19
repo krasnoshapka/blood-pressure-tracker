@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React from 'react';
+import {useFormik} from "formik";
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -36,30 +37,44 @@ const styles = (theme) => ({
 });
 
 const SignupPage = ({classes}) => {
-  const [userData, setUserData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: ''
-  });
-  const {loading, error, signup} = useAuth();
+  const {loading, errors: serverErrors, signup} = useAuth();
+  const {values, getFieldProps, handleSubmit, errors: clientErrors} = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+      confirmPassword: ''
+    },
+    validate(values) {
+      const errors = {};
 
-  function handleChange(event) {
-    let newUserData = {...userData};
-    newUserData[event.target.name] = event.target.value;
-    setUserData(newUserData);
-  }
-
-  function handleSubmit(event) {
-    event.preventDefault();
-
-    signup(userData.email, userData.password, userData.confirmPassword).then((res) => {
-      // Full page reload is done here because context in util/graphql.js needs to be updated with received auth token
-      // before fetching user data
-      if (res) {
-        document.location.href = HOME_ROUTE;
+      for (let key in values) {
+        if (!values[key]) {
+          errors[key] = 'Required';
+        }
       }
-    });
-  }
+
+      if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+        errors.email = "Invalid email address";
+      }
+
+      if (values.password != values.confirmPassword) {
+        errors.password = "Passwords doesn't match";
+        errors.confirmPassword = "Passwords doesn't match";
+      }
+
+      return errors;
+    },
+    onSubmit(values) {
+      signup(values.email, values.password, values.confirmPassword).then((res) => {
+        // Full page reload is done here because context in util/graphql.js needs to be updated with received auth token
+        // before fetching user data
+        if (res) {
+          document.location.href = HOME_ROUTE;
+        }
+      });
+    }
+  });
+  const errors = Object.keys(clientErrors).length > 0 ? clientErrors : serverErrors;
 
   return (
     <Container component="main" maxWidth="xs" className={classes.container}>
@@ -74,14 +89,15 @@ const SignupPage = ({classes}) => {
           variant="outlined"
           margin="normal"
           required
+          type="email"
           fullWidth
           id="email"
           label="Email Address"
           name="email"
           autoComplete="email"
-          helperText={error && error.email}
-          error={error && error.email ? true : false}
-          onChange={handleChange}
+          {...getFieldProps("email")}
+          helperText={errors && errors.email}
+          error={errors && errors.email}
         />
         <TextField
           variant="outlined"
@@ -93,9 +109,9 @@ const SignupPage = ({classes}) => {
           type="password"
           id="password"
           autoComplete="current-password"
-          helperText={error && error.password}
-          error={error && error.password ? true : false}
-          onChange={handleChange}
+          {...getFieldProps("password")}
+          helperText={errors && errors.password}
+          error={errors && errors.password}
         />
         <TextField
           variant="outlined"
@@ -107,9 +123,9 @@ const SignupPage = ({classes}) => {
           type="password"
           id="confirmPassword"
           autoComplete="current-password"
-          helperText={error && error.confirmPassword}
-          error={error && error.confirmPassword ? true : false}
-          onChange={handleChange}
+          {...getFieldProps("confirmPassword")}
+          helperText={errors && errors.confirmPassword}
+          error={errors && errors.confirmPassword}
         />
         <Button
           type="submit"
@@ -118,7 +134,7 @@ const SignupPage = ({classes}) => {
           color="primary"
           className={classes.submit}
           onClick={handleSubmit}
-          disabled={!userData.email || !userData.password}
+          disabled={!values.email || !values.password}
         >
           Sign Up
           {loading && <CircularProgress size={30} className={classes.progress} />}

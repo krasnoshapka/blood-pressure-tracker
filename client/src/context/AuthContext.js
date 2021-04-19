@@ -58,7 +58,7 @@ function AuthProvider(props) {
   return (
     <AuthContext.Provider
       value={{ signin, logout, signup, loading: _signInLoading || _signUpLoading,
-        error: processErrors(_signInError) || processErrors(_signUpError) }}
+        errors: processErrors(_signInError) || processErrors(_signUpError) }}
       {...props}
     />
   );

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import {useFormik} from "formik";
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -41,29 +42,33 @@ const styles = (theme) => ({
 });
 
 const SigninPage = ({ classes }) => {
-  const [userData, setUserData] = useState({
-    email: '',
-    password: '',
-  });
-  const {loading, error, signin} = useAuth();
+  const {loading, errors: serverErrors, signin} = useAuth();
+  const {values, getFieldProps, handleSubmit, errors: clientErrors} = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    validate(values) {
+      const errors = {};
 
-  function handleChange(event) {
-    let newUserData = {...userData};
-    newUserData[event.target.name] = event.target.value;
-    setUserData(newUserData);
-  }
-
-  function handleSubmit(event) {
-    event.preventDefault();
-
-    signin(userData.email, userData.password).then((res) => {
-      // Full page reload is done here because context in util/graphql.js needs to be updated with received auth token
-      // before fetching user data
-      if (res) {
-        document.location.href = HOME_ROUTE;
+      for (let key in values) {
+        if (!values[key]) {
+          errors[key] = 'Required';
+        }
       }
-    });
-  }
+      return errors;
+    },
+    onSubmit(values) {
+      signin(values.email, values.password).then((res) => {
+        // Full page reload is done here because context in util/graphql.js needs to be updated with received auth token
+        // before fetching user data
+        if (res) {
+          document.location.href = HOME_ROUTE;
+        }
+      });
+    }
+  });
+  const errors = Object.keys(clientErrors).length > 0 ? clientErrors : serverErrors;
 
   return (
     <Container component="main" maxWidth="xs" className={classes.container}>
@@ -74,9 +79,9 @@ const SigninPage = ({ classes }) => {
         Login
       </Typography>
       <form className={classes.form} noValidate>
-        {error && (
+        {errors && (
           <Typography variant="body2" className={classes.customError}>
-            {error.message}
+            {errors.message}
           </Typography>
         )}
         <TextField
@@ -89,9 +94,9 @@ const SigninPage = ({ classes }) => {
           name="email"
           autoComplete="email"
           autoFocus
-          helperText={error && error.email}
-          error={error && error.email ? true : false}
-          onChange={handleChange}
+          {...getFieldProps("email")}
+          helperText={errors && errors.email}
+          error={errors && errors.email}
         />
         <TextField
           variant="outlined"
@@ -103,9 +108,9 @@ const SigninPage = ({ classes }) => {
           type="password"
           id="password"
           autoComplete="current-password"
-          helperText={error && error.password}
-          error={error && error.password ? true : false}
-          onChange={handleChange}
+          {...getFieldProps("password")}
+          helperText={errors && errors.password}
+          error={errors && errors.password}
         />
         <Button
           type="submit"
@@ -114,7 +119,7 @@ const SigninPage = ({ classes }) => {
           color="primary"
           className={classes.submit}
           onClick={handleSubmit}
-          disabled={loading || !userData.email || !userData.password}
+          disabled={loading || !values.email || !values.password}
         >
           Sign In
           {loading && <CircularProgress size={30} className={classes.progress} />}
