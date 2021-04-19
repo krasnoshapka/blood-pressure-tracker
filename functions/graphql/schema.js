@@ -2,6 +2,16 @@ const {gql} = require('apollo-server-express');
 
 const typeDefs = gql`
   scalar Date
+  
+  enum Weekdays {
+    mon
+    tue
+    wed
+    thu
+    fri
+    sat
+    sun
+  }
 
   type User {
     id: ID!
@@ -13,13 +23,7 @@ const typeDefs = gql`
   type Notification {
     id: ID!
     user: User!
-    mon: Boolean!
-    tue: Boolean!
-    wed: Boolean!
-    thu: Boolean!
-    fri: Boolean!
-    sat: Boolean!
-    sun: Boolean!
+    days: [Weekdays]!
     time: String!
   }  
   
@@ -40,13 +44,7 @@ const typeDefs = gql`
     signUpUser(email: String!, password: String!, confirmPassword: String!): String
     
     addNotification(
-      mon: Boolean!, 
-      tue: Boolean!,
-      wed: Boolean!,
-      thu: Boolean!,
-      fri: Boolean!,
-      sat: Boolean!,
-      sun: Boolean!,
+      days: [Weekdays]!,
       time: String!
     ): Notification
     deleteNotification(id: ID!): Boolean

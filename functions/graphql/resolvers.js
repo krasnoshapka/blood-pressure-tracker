@@ -87,13 +87,7 @@ async function notifications(parent, args, context, info) {
   data.forEach((doc) => {
     notifications.push({
       user: doc.data().user,
-      mon: doc.data().mon,
-      tue: doc.data().tue,
-      wed: doc.data().wed,
-      thu: doc.data().thu,
-      fri: doc.data().fri,
-      sat: doc.data().sat,
-      sun: doc.data().sun,
+      days: doc.data().days,
       time: doc.data().time,
       id: doc.id
     });
@@ -104,13 +98,7 @@ async function notifications(parent, args, context, info) {
 async function addNotification(parent, args, context, info) {
   const newNotification = {
     user: context.uid,
-    mon: args.mon,
-    tue: args.tue,
-    wed: args.wed,
-    thu: args.thu,
-    fri: args.fri,
-    sat: args.sat,
-    sun: args.sun,
+    days: args.days,
     time: args.time
   }
   const doc = await db.collection('notifications').add(newNotification);

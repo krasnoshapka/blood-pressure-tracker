@@ -2,6 +2,7 @@ import React, { createContext, useContext } from "react";
 import {gql, useMutation, useQuery} from "@apollo/client";
 import messaging from "../util/firebase";
 import {processErrors} from "../util/errors";
+import {weekDays} from "../constants/notification";
 
 const USER_QUERY = gql`
   {
@@ -9,13 +10,7 @@ const USER_QUERY = gql`
       email
       notifications {
         id
-        mon
-        tue
-        wed
-        thu
-        fri
-        sat
-        sun
+        days
         time
       }
     } 
@@ -24,16 +19,10 @@ const USER_QUERY = gql`
 
 const ADD_NOTIFICATION_MUTATION = gql`
   mutation addNotification(
-    $mon:Boolean!,
-    $tue:Boolean!,
-    $wed:Boolean!,
-    $thu:Boolean!,
-    $fri:Boolean!,
-    $sat:Boolean!,
-    $sun:Boolean!,
+    $days: [Weekdays]!,
     $time: String!
   ) {
-    addNotification(mon:$mon, tue:$tue, wed:$wed, thu:$thu, fri:$fri, sat:$sat, sun:$sun, time:$time) {
+    addNotification(days: $days, time:$time) {
       id
     }
   }
@@ -53,7 +42,7 @@ const UserContext = createContext({
 
 const UserProvider = props => {
   const { loading, data, refetch, error: _userError } = useQuery(USER_QUERY);
-  const user = data ? data.user : null;
+  let user = data ? {...data.user} : null;
   const [addNotification, {error: _addNotificationError}] = useMutation(ADD_NOTIFICATION_MUTATION);
   const [deleteNotification, {error: _deleteNotificationError}] = useMutation(DELETE_NOTIFICATION_MUTATION);
 
@@ -74,8 +63,15 @@ const UserProvider = props => {
   }
 
   const _addNotification = async (notitification) => {
+    const days = [];
+    weekDays.forEach((day) => {
+      if (notitification[day.name]) {
+        days.push(day.name);
+      }
+    });
+
     try {
-      const res = await addNotification({ variables: { ...notitification } });
+      const res = await addNotification({ variables: { days, time: notitification.time } });
       if (res && res.data && res.data.addNotification) {
         await refetch();
         return true;
@@ -99,6 +95,18 @@ const UserProvider = props => {
     } catch (e) {
       console.log(e);
     }
+  }
+
+  if (user && user.notifications) {
+    user.notifications = user.notifications.map((n) => {
+      const res = {...n};
+      if (n.days) {
+        weekDays.forEach((day) => {
+          res[day.name] = n.days.includes(day.name);
+        });
+      }
+      return res;
+    });
   }
 
   const error = processErrors(_userError) || processErrors(_addNotificationError) ||
