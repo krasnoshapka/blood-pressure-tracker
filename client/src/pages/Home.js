@@ -43,25 +43,24 @@ const styles = (theme) => ({
   }
 });
 
-const HomePage = (props) => {
+const HomePage = ({ classes, history }) => {
   const [page, setPage] = useState('pressure');
   const {logout} = useAuth();
   const {loading, error: userError} = useUser();
   // Redirect to signin page when token is expired or other error occurred.
   if (userError) {
-    props.history.push(SIGNIN_ROUTE);
+    history.push(SIGNIN_ROUTE);
   }
 
   const handlePageChange = (event, newPage) => {
     if (newPage === 'logout') {
       logout();
-      props.history.push(SIGNIN_ROUTE);
+      history.push(SIGNIN_ROUTE);
     }
     setPage(newPage);
   }
 
-  const { classes } = props;
-  const childProps = { history: props.history, setPage };
+  const childProps = { history, setPage };
 
   return (
     <>
