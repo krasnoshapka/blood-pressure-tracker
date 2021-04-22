@@ -97,7 +97,7 @@ const SignupPage = ({classes}) => {
           autoComplete="email"
           {...getFieldProps("email")}
           helperText={errors && errors.email}
-          error={errors && errors.email}
+          error={errors && errors.email ? true : false}
         />
         <TextField
           variant="outlined"
@@ -111,7 +111,7 @@ const SignupPage = ({classes}) => {
           autoComplete="current-password"
           {...getFieldProps("password")}
           helperText={errors && errors.password}
-          error={errors && errors.password}
+          error={errors && errors.password ? true : false}
         />
         <TextField
           variant="outlined"
@@ -125,7 +125,7 @@ const SignupPage = ({classes}) => {
           autoComplete="current-password"
           {...getFieldProps("confirmPassword")}
           helperText={errors && errors.confirmPassword}
-          error={errors && errors.confirmPassword}
+          error={errors && errors.confirmPassword ? true : false}
         />
         <Button
           type="submit"

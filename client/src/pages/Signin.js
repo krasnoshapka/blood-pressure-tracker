@@ -96,7 +96,7 @@ const SigninPage = ({ classes }) => {
           autoFocus
           {...getFieldProps("email")}
           helperText={errors && errors.email}
-          error={errors && errors.email}
+          error={errors && errors.email ? true : false}
         />
         <TextField
           variant="outlined"
@@ -110,7 +110,7 @@ const SigninPage = ({ classes }) => {
           autoComplete="current-password"
           {...getFieldProps("password")}
           helperText={errors && errors.password}
-          error={errors && errors.password}
+          error={errors && errors.password ? true : false}
         />
         <Button
           type="submit"

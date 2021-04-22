@@ -1,4 +1,5 @@
-import React, {useState} from "react";
+import React from "react";
+import {useFormik} from "formik";
 import {Button, TextField} from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -19,23 +20,21 @@ const styles = (theme) => ({
 
 const SettingsBasic = ({classes}) => {
   const {loading, user} = useUser();
-  const [settings, setSettings] = useState({
-    email: user.email
+  const {getFieldProps, handleSubmit, errors} = useFormik({
+    initialValues: {
+      email: user.email
+    },
+    validate(values) {
+      // TODO: validate settings
+    },
+    onSubmit(values) {
+      const formRequest = {
+        email: values.email,
+      };
+      // TODO: update settings when there will be some settings
+      console.log(formRequest);
+    }
   });
-
-  function handleChange(event) {
-    let newSettings = {...settings};
-    newSettings[event.target.name] = event.target.value;
-    setSettings(newSettings);
-  }
-
-  function updateSettings(event) {
-    event.preventDefault();
-    const formRequest = {
-      email: user.email,
-    };
-    // TODO: update settings when there will be some settings
-  }
 
   return (!user ?
     <CircularProgress size={150} className={classes.uiProgress} />
@@ -48,8 +47,7 @@ const SettingsBasic = ({classes}) => {
         name="email"
         variant="outlined"
         disabled={true}
-        value={settings.email}
-        onChange={handleChange}
+        {...getFieldProps("email")}
       />
 
       <Button
@@ -57,7 +55,7 @@ const SettingsBasic = ({classes}) => {
         variant="contained"
         type="submit"
         className={classes.submit}
-        onClick={updateSettings}
+        onClick={handleSubmit}
         disabled={loading || !user.email}
       >
         Save details

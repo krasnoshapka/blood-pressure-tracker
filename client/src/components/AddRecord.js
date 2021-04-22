@@ -71,7 +71,7 @@ const AddRecord = ({classes, history, setPage}) => {
         autoComplete="Systolic"
         helperText={errors && errors.sys}
         {...getFieldProps("sys")}
-        error={errors && errors.sys}
+        error={errors && errors.sys ? true : false}
       />
       <TextField
         variant="outlined"
@@ -85,7 +85,7 @@ const AddRecord = ({classes, history, setPage}) => {
         autoComplete="Diastolic"
         helperText={errors && errors.dia}
         {...getFieldProps("dia")}
-        error={errors && errors.dia}
+        error={errors && errors.dia ? true : false}
       />
       <TextField
         variant="outlined"
@@ -99,7 +99,7 @@ const AddRecord = ({classes, history, setPage}) => {
         autoComplete="Pulse"
         helperText={errors && errors.pul}
         {...getFieldProps("pul")}
-        error={errors && errors.pul}
+        error={errors && errors.pul ? true : false}
       />
       <Button variant="contained" color="primary" size="large" onClick={handleSubmit}
         startIcon={<SaveIcon />} className={classes.submit}>Save</Button>
